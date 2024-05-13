@@ -6,25 +6,19 @@ timezone: Asia/Dhaka
 # ↓ --------------------------
 
 title: darthVader
-
 tagline: Back-end, API, Dev Ops Specialist Robotics & AI Enthusiast 🚀💻🤖
-
 description: >-
   Back-end, API, Dev Ops Specialist | Senior Software Engineer @ PCubeDigital | Robotics & AI Enthusiast 🚀💻🤖
-  
 url: "https://extinctCoder.github.io"
 
 github:
-  username: extinctCoder # change to your github username
-
+  username: extinctCoder
 twitter:
   username: extinctCoder # change to your twitter username
 
 social:
-  # Change to your full name.
-  # It will be displayed as the default author of the posts and the copyright owner in the Footer
   name: Sabbir Ahmed Shourov
-  email: write2shourov@gmail.com # change to your email address
+  email: write2shourov@gmail.com
   links:
     # The first element serves as the copyright owner's link
     # - https://twitter.com/username # change to your twitter homepage
