@@ -1,14 +1,5 @@
-# The Site Configuration
-
-# Import the theme
 theme: jekyll-theme-chirpy
-
-# The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
-# If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
-# otherwise, the layout language will use the default value of 'en'.
 lang: en
-
-# Change to your timezone › https://kevinnovak.github.io/Time-Zone-Picker
 timezone: Asia/Dhaka
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
@@ -16,13 +7,11 @@ timezone: Asia/Dhaka
 
 title: darthVader
 
-tagline: Back-end, API, Dev Ops Specialist | Robotics & AI Enthusiast 🚀💻🤖
+tagline: Back-end, API, Dev Ops Specialist Robotics & AI Enthusiast 🚀💻🤖
 
-description: >- # used by seo meta and the atom feed
+description: >-
   Back-end, API, Dev Ops Specialist | Senior Software Engineer @ PCubeDigital | Robotics & AI Enthusiast 🚀💻🤖
-
-# Fill in the protocol & hostname for your site.
-# e.g. 'https://username.github.io', note that it does not end with a '/'.
+  
 url: "https://extinctCoder.github.io"
 
 github:
