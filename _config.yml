@@ -14,12 +14,12 @@ timezone: Asia/Dhaka
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Chirpy # the main title
+title: darthVader
 
-tagline: A text-focused Jekyll theme # it will display as the sub-title
+tagline: Back-end, API, Dev Ops Specialist | Robotics & AI Enthusiast 🚀💻🤖
 
 description: >- # used by seo meta and the atom feed
-  A minimal, responsive and feature-rich Jekyll theme for technical writing.
+  Back-end, API, Dev Ops Specialist | Senior Software Engineer @ PCubeDigital | Robotics & AI Enthusiast 🚀💻🤖
 
 # Fill in the protocol & hostname for your site.
 # e.g. 'https://username.github.io', note that it does not end with a '/'.
@@ -38,7 +38,7 @@ social:
   email: write2shourov@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/username # change to your twitter homepage
+    # - https://twitter.com/username # change to your twitter homepage
     - https://github.com/extinctCoder # change to your github homepage
     - https://www.linkedin.com/in/extinctCoder
     # Uncomment below to add more social links
@@ -74,7 +74,7 @@ analytics:
 
 # Pageviews settings
 pageviews:
-  provider: # now only supports 'goatcounter'
+  provider: extinctcoder # now only supports 'goatcounter'
 
 # Prefer color scheme setting.
 #
