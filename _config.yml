@@ -1,16 +1,11 @@
 theme: jekyll-theme-chirpy
 lang: en
 timezone: Asia/Dhaka
-
-# jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
-# ↓ --------------------------
-
 title: darthVader
 tagline: Back-end, API, Dev Ops Specialist Robotics & AI Enthusiast 🚀💻🤖
 description: >-
   Back-end, API, Dev Ops Specialist | Senior Software Engineer @ PCubeDigital | Robotics & AI Enthusiast 🚀💻🤖
 url: "https://extinctCoder.github.io"
-
 github:
   username: extinctCoder
 twitter:
@@ -20,17 +15,10 @@ social:
   name: darthVader
   email: write2shourov@gmail.com
   links:
-    # The first element serves as the copyright owner's link
-    # - https://twitter.com/username # change to your twitter homepage
-    - https://github.com/extinctCoder # change to your github homepage
     - https://www.linkedin.com/in/extinctCoder
-    # Uncomment below to add more social links
-    # - https://www.facebook.com/username
-    # - https://www.linkedin.com/in/username
-
-# Site Verification Settings
+    - https://github.com/extinctCoder
 webmaster_verifications:
-  google: # fill in your Google verification code
+  google: tT60UR4nmrbtWxmkhbvr6AYBm0xnE2Q335p3wfD8L4o
   bing: # fill in your Bing verification code
   alexa: # fill in your Alexa verification code
   yandex: # fill in your Yandex verification code
