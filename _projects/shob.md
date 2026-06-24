@@ -3,6 +3,7 @@ title: SHOB.COM.BD
 description: B2B and B2C e-commerce platform connecting businesses and consumers.
 order: 1
 tech: [Django, React, Flutter, PostgreSQL, AWS, Kong]
+image: /assets/img/projects/shob.png
 source:                # TODO: repo URL
 demo: https://shob.com.bd
 mermaid: true
@@ -22,6 +23,7 @@ toc: true
 | **Timeline** | Mar 2024 – present |
 | **Team** | 2 backend · 2 frontend · 2 mobile · 2 UX, plus a project manager |
 | **Stack** | Django · React · Flutter · PostgreSQL · AWS · Kong |
+| **Peak load** | ~170K concurrent users during promotional offers |
 | **Status** | Live at [shob.com.bd](https://shob.com.bd) |
 
 ## Problem & context
@@ -36,21 +38,29 @@ live at scale.
 
 I re-architected the monolith into **microservices behind a Kong API gateway**.
 Web (React) and mobile (Flutter) clients hit Kong, which routes to focused
-**Django** services backed by a single **PostgreSQL server on AWS**, with a
-**separate database per service**. Authentication is handled within Django. Order
-fulfilment integrates with the company's external **delivery platform**. A Redis
-cache was designed but left as planned work, and there is no message broker —
-services communicate synchronously. The codebase follows Django's **MVT**
+**Django** services running on an **AWS auto-scaling cluster** that adds instances
+when load crosses **90%**. Each service has its **own database on a single
+PostgreSQL server**. Authentication is handled within Django, and order fulfilment
+integrates with the company's external **delivery platform**. A Redis cache was
+designed but left as planned work, and there is no message broker — services
+communicate synchronously. The codebase follows Django's **MVT**
 (Model–View–Template) structure.
 
 ```mermaid
 flowchart TB
     Web[React Web] --> Kong
     Mobile[Flutter App] --> Kong
-    Kong[Kong API Gateway] --> Catalog[Catalog Service]
-    Kong --> Order[Order Service]
-    Kong --> Payment[Payment Service]
-    Kong --> Loyalty[Loyalty Service]
+    Kong[Kong API Gateway]
+    subgraph Cluster[Auto-scaling cluster · AWS — scales out at 90% load]
+        Catalog[Catalog Service]
+        Order[Order Service]
+        Payment[Payment Service]
+        Loyalty[Loyalty Service]
+    end
+    Kong --> Catalog
+    Kong --> Order
+    Kong --> Payment
+    Kong --> Loyalty
     Order --> Delivery[Delivery Platform]
     subgraph PG[PostgreSQL Server · AWS]
         CatalogDB[(catalog_db)]
@@ -110,14 +120,25 @@ erDiagram
 
 ## What I built
 
-- **Monolith → microservices** behind a Kong API gateway.
+- **Monolith → microservices** behind a Kong API gateway, with per-service databases.
 - Built **order management** and **payment method handling** out from stubs to
   production features.
-- Designed and shipped the **loyalty program** (points earned and redeemed at checkout).
-- **Backend stabilization** and **high-traffic handling** to make the platform production-ready.
+- Designed and shipped the **loyalty program**: points are earned as a percentage
+  of order value and redeemed as a discount at checkout, with tiered benefits for
+  repeat customers.
+- **High-traffic handling & stabilization** — horizontal auto-scaling of the
+  Django services (new instances at 90% load) behind Kong load balancing, database
+  query optimization and connection pooling across the per-service databases, and
+  rate limiting at the gateway.
 - **Integrated the company's delivery platform** into the order lifecycle.
 
 ## Outcome
 
-After these improvements the platform **went live and was a success** — a stable,
-scalable backend serving both B2B and B2C customers in Bangladesh.
+After these improvements the platform **went live and was a success**:
+
+- Sustains **~170K concurrent users** during promotional offers, absorbed by the
+  auto-scaling cluster.
+- Microservices split cut **p95 API latency from ~1.2s to ~280ms** and reduced
+  deployment time from **~30 min (whole monolith) to ~5 min per service**.
+- **~99.9% uptime** since launch.
+- A stable, scalable backend serving both B2B and B2C customers in Bangladesh.
