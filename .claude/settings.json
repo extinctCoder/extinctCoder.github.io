@@ -6,7 +6,14 @@
       "Bash(find readme *)",
       "Bash(python3 -c ' *)",
       "Bash(find . -iname \"claude.md\" -not -path \"*/node_modules/*\")",
-      "Bash(find /Users/extinctcoder/personal/extinctCoder.github.io -iname \"claude.md\" -not -path \"*/node_modules/*\")"
+      "Bash(find /Users/extinctcoder/personal/extinctCoder.github.io -iname \"claude.md\" -not -path \"*/node_modules/*\")",
+      "Bash(bundle exec *)",
+      "Bash(bundle info *)",
+      "Read(//Users/extinctcoder/.rbenv/versions/3.3.6/lib/ruby/gems/3.3.0/gems/jekyll-theme-chirpy-7.6.0/_layouts/**)",
+      "Read(//Users/extinctcoder/.rbenv/versions/3.3.6/lib/ruby/gems/3.3.0/gems/jekyll-theme-chirpy-7.6.0/_includes/**)",
+      "Bash(GEM=/Users/extinctcoder/.rbenv/versions/3.3.6/lib/ruby/gems/3.3.0/gems/jekyll-theme-chirpy-7.6.0; echo \"===SASS FILES===\"; find \"$GEM/_sass\" -type f | head -50; echo; echo \"===grep post-list / card-wrapper / post-preview ===\"; grep -rn \"post-list\\\\|card-wrapper\\\\|post-preview\" \"$GEM/_sass\" | head -60)",
+      "Read(//Users/extinctcoder/.rbenv/versions/3.3.6/lib/ruby/gems/3.3.0/gems/jekyll-theme-chirpy-7.6.0/_sass/**)",
+      "Bash(awk 'NR>=100 && NR<=146 && /\\\\{/ {print NR\": \"$0}' /Users/extinctcoder/.rbenv/versions/3.3.6/lib/ruby/gems/3.3.0/gems/jekyll-theme-chirpy-7.6.0/_sass/base/_base.scss)"
     ]
   }
 }

@@ -38,6 +38,52 @@ Pushing to `main` triggers `.github/workflows/pages-deploy.yml`, which builds wi
 - `_data/contact.yml` and `_data/share.yml` configure the sidebar contact links and post share buttons.
 - Site-wide settings (title, social links, comments, analytics, theme mode) are all in `_config.yml`. Comments use **giscus** wired to this repo's Discussions; analytics use **goatcounter** (`extinctcoder`).
 
+## Projects collection
+
+Projects are a **custom collection** (`_projects/`), separate from blog posts. Declared in `_config.yml` under `collections:` with `output: true` (each project gets a page at `/projects/:title/`). The listing/portfolio page is the `_tabs/projects.md` tab, which reuses Chirpy's **native** post-card markup (`#post-list` + `card-wrapper`/`card`/`post-preview`) over `site.projects` — no custom CSS; all styling comes from the theme's `_sass/pages/_home.scss`.
+
+**TOC note:** Chirpy's TOC is implemented only in the `post` layout, not `page`. Projects use `page`, so `toc: true` in their front matter is dormant until a TOC-capable layout is added (deferred UI work).
+
+**Mermaid:** Chirpy renders Mermaid natively when `mermaid: true` is set in front matter (see the theme's `_includes/js-selector.html`). Use ```` ```mermaid ```` fenced blocks. Prefer `flowchart`/`sequenceDiagram`/`erDiagram` — Mermaid's `C4*` syntax is experimental and renders inconsistently.
+
+**Standard project file template** (every `_projects/*.md` follows this — keep new ones consistent):
+
+````markdown
+---
+title: <Project Name>
+description: <one-line summary for the card>
+order: <n>                 # card position, 1 = first
+tech: [<Tech>, <Tech>]     # chips shown on the card
+source:                    # repo URL (omit/blank if none)
+demo:                      # live URL (omit/blank if none)
+mermaid: true              # REQUIRED for diagrams to render
+toc: true                  # forward-ready; dormant under `page` layout
+# image:                   # optional preview; omit if none
+---
+
+{% raw %}{% if page.source or page.demo %}
+> {% if page.source %}[Source]({{ page.source }}){% endif %}{% if page.source and page.demo %} · {% endif %}{% if page.demo %}[Live demo]({{ page.demo }}){% endif %}
+{% endif %}{% endraw %}
+
+## At a glance
+| | |
+|---|---|
+| **Role** | … |
+| **Timeline** | … |
+| **Team** | … |
+| **Stack** | … |
+| **Status** | … |
+
+## Problem & context
+## Architecture        (flowchart diagram)
+## Key flow            (sequenceDiagram)
+## Data model          (erDiagram)
+## What I built
+## Outcome
+````
+
+Links live in front matter (`source`/`demo`) as the single source of truth and are rendered in the body via Liquid — the block only emits links that exist, so no dead `#` links.
+
 ## Notable customization
 
 `_plugins/posts-lastmod-hook.rb` sets each post's `last_modified_at` from git history — it shells out to `git rev-list`/`git log` at build time. This means **accurate "last modified" dates depend on full git history being present**; the CI checkout uses `fetch-depth: 0` for this reason. Squashing or shallow-cloning will break the dates.
