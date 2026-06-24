@@ -156,6 +156,8 @@ exclude:
   - docs
   - tools
   - README.md
+  - CLAUDE.md # internal AI-guidance doc — keep out of the public site
+  - REQUIREMENTS.md # internal dev-setup notes — keep out of the public site
   - LICENSE
   - "*.config.js"
   - package*.json
