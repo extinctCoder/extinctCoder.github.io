@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/extinctcoder/personal/extinctCoder/**)",
+      "Bash(find . -iname \"*resume*\" -not -path \"*/node_modules/*\")",
+      "Bash(find readme *)",
+      "Bash(python3 -c ' *)",
+      "Bash(find . -iname \"claude.md\" -not -path \"*/node_modules/*\")",
+      "Bash(find /Users/extinctcoder/personal/extinctCoder.github.io -iname \"claude.md\" -not -path \"*/node_modules/*\")"
+    ]
+  }
+}
