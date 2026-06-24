@@ -1,48 +1,56 @@
+# =============================================================================
+#  SITE IDENTITY — who the site is and where it lives
+# =============================================================================
 theme: jekyll-theme-chirpy
 lang: en
 timezone: Asia/Dhaka
-title: Sabbir Ahmed Shourov
-tagline: Senior Backend Engineer · Robotics & AI Enthusiast 🤖
-description: >-
+title: Sabbir Ahmed Shourov # shown in the sidebar header & browser tab
+tagline: Senior Backend Engineer · Robotics & AI Enthusiast 🤖 # subtitle under the title
+description: >- # used for SEO meta + link-preview text
   Senior Backend Engineer specializing in APIs, microservices, and DevOps — sharing real-world projects and lessons in backend engineering. Robotics & AI enthusiast 🤖
 url: "https://extinctCoder.github.io"
+baseurl: "" # keep empty for a username.github.io site
+
+# =============================================================================
+#  PROFILE & SOCIAL — sidebar identity and contact links
+# =============================================================================
 github:
   username: extinctCoder
-
 social:
-  name: Sabbir Ahmed Shourov
+  name: Sabbir Ahmed Shourov # author byline on posts + footer copyright
   email: write2shourov@gmail.com
   links:
     - https://www.linkedin.com/in/extinctCoder
     - https://github.com/extinctCoder
+avatar: https://avatars.githubusercontent.com/u/16348041?v=4 # sidebar profile photo
+
+# =============================================================================
+#  SEO & SEARCH ENGINES — ownership verification + social link previews
+# =============================================================================
 webmaster_verifications:
-  google: tT60UR4nmrbtWxmkhbvr6AYBm0xnE2Q335p3wfD8L4o
+  google: tT60UR4nmrbtWxmkhbvr6AYBm0xnE2Q335p3wfD8L4o # Google Search Console
+social_preview_image: /assets/img/social-preview.png # og:image shown when links are shared
 
-# ↑ --------------------------
-# The end of `jekyll-seo-tag` settings
-
-# Web Analytics Settings
+# =============================================================================
+#  ANALYTICS — visitor statistics
+# =============================================================================
 analytics:
   google:
-    id: G-YLL6CDRX2M
+    id: G-YLL6CDRX2M # Google Analytics (GA4)
   goatcounter:
-    id: extinctcoder
-
-# Pageviews settings
+    id: extinctcoder # GoatCounter (privacy-friendly + on-page view counts)
 pageviews:
-  provider: goatcounter # now only supports 'goatcounter'
+  provider: goatcounter # on-page per-post view counter (goatcounter only)
+
+# =============================================================================
+#  APPEARANCE — theme + content display
+# =============================================================================
 theme_mode: # empty = follow the visitor's system preference [light | dark]
+toc: true # global switch for the table of contents on posts
 
-# the avatar on sidebar, support local or CORS resources
-avatar: https://avatars.githubusercontent.com/u/16348041?v=4
-
-# The URL of the site-wide social preview image used in SEO `og:image` meta tag.
-# It can be overridden by a customized `page.image` in front matter.
-social_preview_image: /assets/img/social-preview.png # shown when links are shared
-
-# boolean type, the global switch for TOC in posts.
-toc: true
-
+# =============================================================================
+#  COMMENTS — giscus (comments stored as GitHub Discussions)
+# =============================================================================
 comments:
   provider: giscus
   giscus:
@@ -50,37 +58,26 @@ comments:
     repo_id: R_kgDOL64i_w
     category: Comments
     category_id: DIC_kwDOL64i_84CfWCA
-    mapping: # optional, default to 'pathname'
-    strict: # optional, default to '0'
-    input_position: # optional, default to 'bottom'
-    lang: # optional, default to the value of `site.lang`
-    reactions_enabled: # optional, default to the value of `1`
 
-# Self-hosted static assets, optional › https://github.com/cotes2020/chirpy-static-assets
-assets:
-  self_host:
-    enabled: # boolean, keep empty means false
-    # specify the Jekyll environment, empty means both
-    # only works if `assets.self_host.enabled` is 'true'
-    env: # [development | production]
-
+# =============================================================================
+#  PWA — installable Progressive Web App + offline cache
+# =============================================================================
 pwa:
-  enabled: true # the option for PWA feature (installable)
+  enabled: true
   cache:
-    enabled: true # the option for PWA offline cache
-    # Paths defined here will be excluded from the PWA cache.
-    # Usually its value is the `baseurl` of another website that
-    # shares the same domain name as the current website.
-    deny_paths:
-      # - "/example"  # URLs match `<SITE_URL>/example/*` will not be cached by the PWA
+    enabled: true
+    deny_paths: # paths to exclude from the PWA cache (none)
 
-paginate: 10
+# =============================================================================
+#  CONTENT & PAGINATION
+# =============================================================================
+paginate: 10 # posts per page on the home feed
 
-# The base URL of your site
-baseurl: ""
+# =============================================================================
+#  ADVANCED — theme internals. Not recommended to modify.
+# =============================================================================
 
-# ------------ The following options are not recommended to be modified ------------------
-
+# --- Markdown engine (kramdown) + code highlighting (Rouge) ---
 kramdown:
   footnote_backlink: "&#8617;&#xfe0e;"
   syntax_highlighter: rouge
@@ -93,6 +90,7 @@ kramdown:
       line_numbers: true
       start_line: 1
 
+# --- Custom collections (nav tabs + the projects showcase) ---
 collections:
   tabs:
     output: true
@@ -101,31 +99,30 @@ collections:
     output: true
     sort_by: order
 
+# --- Default front matter applied per content type ---
 defaults:
+  # Blog posts
   - scope:
-      path: "" # An empty string here means all files in the project
+      path: ""
       type: posts
     values:
       layout: post
-      comments: true # Enable comments in posts.
-      toc: true # Display TOC column in posts.
-      # DO NOT modify the following parameter unless you are confident enough
-      # to update the code of all other post links in this project.
-      permalink: /posts/:title/
+      comments: true
+      toc: true
+      permalink: /posts/:title/ # do not change without updating all post links
+  # Drafts — no comments
   - scope:
       path: _drafts
     values:
       comments: false
+  # Navigation tabs
   - scope:
       path: ""
-      type: tabs # see `site.collections`
+      type: tabs
     values:
       layout: page
       permalink: /:title/
-  - scope:
-      path: assets/js/dist
-    values:
-      swcache: true
+  # Project showcase
   - scope:
       path: ""
       type: projects
@@ -133,7 +130,13 @@ defaults:
       layout: page
       permalink: /projects/:title/
       comments: false
+  # Theme JS assets — service-worker cache
+  - scope:
+      path: assets/js/dist
+    values:
+      swcache: true
 
+# --- Output minification ---
 sass:
   style: compressed
 
@@ -146,6 +149,7 @@ compress_html:
   ignore:
     envs: [development]
 
+# --- Files kept out of the built site ---
 exclude:
   - "*.gem"
   - "*.gemspec"
@@ -156,6 +160,7 @@ exclude:
   - "*.config.js"
   - package*.json
 
+# --- Auto-generated category & tag pages ---
 jekyll-archives:
   enabled: [categories, tags]
   layouts:

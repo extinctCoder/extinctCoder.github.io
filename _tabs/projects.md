@@ -1,7 +1,7 @@
 ---
 layout: page
 icon: fas fa-diagram-project
-order: 5
+order: 1
 title: Projects
 ---
 
