@@ -1,29 +1,22 @@
 theme: jekyll-theme-chirpy
 lang: en
 timezone: Asia/Dhaka
-title: darthVader
-tagline: Back-end, API, Dev Ops Specialist Robotics & AI Enthusiast 🚀💻🤖
+title: Sabbir Ahmed Shourov
+tagline: Senior Backend Engineer · Robotics & AI Enthusiast 🤖
 description: >-
-  Back-end, API, Dev Ops Specialist | Senior Software Engineer @ PCubeDigital | Robotics & AI Enthusiast 🚀💻🤖
+  Senior Backend Engineer specializing in APIs, microservices, and DevOps — sharing real-world projects and lessons in backend engineering. Robotics & AI enthusiast 🤖
 url: "https://extinctCoder.github.io"
 github:
   username: extinctCoder
-twitter:
-  username: extinctCoder # change to your twitter username
 
 social:
-  name: darthVader
+  name: Sabbir Ahmed Shourov
   email: write2shourov@gmail.com
   links:
     - https://www.linkedin.com/in/extinctCoder
     - https://github.com/extinctCoder
 webmaster_verifications:
   google: tT60UR4nmrbtWxmkhbvr6AYBm0xnE2Q335p3wfD8L4o
-  bing: # fill in your Bing verification code
-  alexa: # fill in your Alexa verification code
-  yandex: # fill in your Yandex verification code
-  baidu: # fill in your Baidu verification code
-  facebook: # fill in your Facebook verification code
 
 # ↑ --------------------------
 # The end of `jekyll-seo-tag` settings
@@ -31,17 +24,9 @@ webmaster_verifications:
 # Web Analytics Settings
 analytics:
   google:
-    id: # fill in your Google Analytics ID
+    id: G-YLL6CDRX2M
   goatcounter:
     id: extinctcoder
-  umami:
-    id: # fill in your Umami ID
-    domain: # fill in your Umami domain
-  matomo:
-    id: # fill in your Matomo ID
-    domain: # fill in your Matomo domain
-  cloudflare:
-    id: # fill in your Cloudflare Web Analytics token
 
 # Pageviews settings
 pageviews:
