@@ -31,26 +31,20 @@ analytics:
 # Pageviews settings
 pageviews:
   provider: goatcounter # now only supports 'goatcounter'
-theme_mode: dark # [light | dark]
-cdn:
+theme_mode: # empty = follow the visitor's system preference [light | dark]
 
 # the avatar on sidebar, support local or CORS resources
 avatar: https://avatars.githubusercontent.com/u/16348041?v=4
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
-social_preview_image: # string, local or CORS resources
+social_preview_image: /assets/img/social-preview.png # shown when links are shared
 
 # boolean type, the global switch for TOC in posts.
 toc: true
 
 comments:
   provider: giscus
-  disqus:
-    shortname: # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
-  utterances:
-    repo: # <gh-username>/<repo>
-    issue_term: # < url | pathname | title | ...>
   giscus:
     repo: extinctCoder/extinctCoder.github.io
     repo_id: R_kgDOL64i_w
