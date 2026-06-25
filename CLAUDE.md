@@ -40,9 +40,16 @@ Pushing to `main` triggers `.github/workflows/pages-deploy.yml`, which builds wi
 
 ## Projects collection
 
-Projects are a **custom collection** (`_projects/`), separate from blog posts. Declared in `_config.yml` under `collections:` with `output: true` (each project gets a page at `/projects/:title/`). The listing/portfolio page is the `_tabs/projects.md` tab, which reuses Chirpy's **native** post-card markup (`#post-list` + `card-wrapper`/`card`/`post-preview`) over `site.projects` — no custom CSS; all styling comes from the theme's `_sass/pages/_home.scss`.
+Projects are a **custom collection** (`_projects/`), separate from blog posts (declared in `_config.yml` under `collections:`, `output: true`, served at `/projects/:title/`). Two **custom layouts** drive it — both reuse the theme's own components, no custom CSS:
 
-**TOC note:** Chirpy's TOC is implemented only in the `post` layout, not `page`. Projects use `page`, so `toc: true` in their front matter is dormant until a TOC-capable layout is added (deferred UI work).
+- **`_layouts/projects.html`** — the listing (the `_tabs/projects.md` tab sets `layout: projects`). Renders the cards (`#post-list` + `card-wrapper`/`post-preview`) **outside `.content`**, like the home page. This matters: inside a tab's `.content` wrapper, the theme's content-typography styles break the card layout.
+- **`_layouts/project.html`** — the detail page (`defaults` sets projects → `layout: project`). Title + description + auto source/demo links + a right-sidebar **TOC**, content in `.content`, and deliberately **no** post chrome (date/author/share/license/related/prev-next).
+
+**TOC:** Chirpy picks the page JS bundle by `page.layout` in `_includes/js-selector.html`, and only some bundles call `tocbot.init()`. We keep a **local override of `_includes/js-selector.html`** mapping `layout: project` → the `page` bundle (fires the TOC init on `data-toc="true"`, and loads the clipboard/lightbox libs). Each project needs `toc: true` + `##` headings for the TOC to appear.
+
+**Listing thumbnails:** Chirpy's card-image handling is hardcoded to `layout: home` (`refactor-content.html`), so an `image:` on the projects *listing* gets wrapped in a lightbox `<a>` (nested anchor) and breaks the card — prefer text-only listing cards and show screenshots on the detail page.
+
+**source/demo links** are rendered by `_layouts/project.html` from the `source`/`demo` front matter (single source of truth — only links that exist are emitted). Do **not** put link markup in the project body.
 
 **Mermaid:** Chirpy renders Mermaid natively when `mermaid: true` is set in front matter (see the theme's `_includes/js-selector.html`). Use ```` ```mermaid ```` fenced blocks. Prefer `flowchart`/`sequenceDiagram`/`erDiagram` — Mermaid's `C4*` syntax is experimental and renders inconsistently.
 
@@ -57,13 +64,9 @@ tech: [<Tech>, <Tech>]     # chips shown on the card
 source:                    # repo URL (omit/blank if none)
 demo:                      # live URL (omit/blank if none)
 mermaid: true              # REQUIRED for diagrams to render
-toc: true                  # forward-ready; dormant under `page` layout
-# image:                   # optional preview; omit if none
+toc: true                  # REQUIRED for the detail-page TOC
+# image:                   # optional; NOT for the listing (see thumbnails note above)
 ---
-
-{% raw %}{% if page.source or page.demo %}
-> {% if page.source %}[Source]({{ page.source }}){% endif %}{% if page.source and page.demo %} · {% endif %}{% if page.demo %}[Live demo]({{ page.demo }}){% endif %}
-{% endif %}{% endraw %}
 
 ## At a glance
 | | |

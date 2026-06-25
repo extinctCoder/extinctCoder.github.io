@@ -1,0 +1,60 @@
+---
+layout: default
+panel_includes:
+  - toc
+---
+
+{% include lang.html %}
+{% include toc-status.html %}
+
+<article class="px-1" data-toc="{{ enable_toc }}">
+  <h1 class="dynamic-title">{{ page.title }}</h1>
+
+  {% if page.description %}
+    <p class="post-desc fw-light mb-4">{{ page.description }}</p>
+  {% endif %}
+
+  {% if page.source or page.demo %}
+    <p class="post-meta mb-4">
+      {% if page.source %}<a href="{{ page.source }}" target="_blank" rel="noopener">Source</a>{% endif %}
+      {% if page.source and page.demo %} · {% endif %}
+      {% if page.demo %}<a href="{{ page.demo }}" target="_blank" rel="noopener">Live demo</a>{% endif %}
+    </p>
+  {% endif %}
+
+  {% if page.image %}
+    {% capture src %}src="{{ page.image.path | default: page.image }}"{% endcapture %}
+    {% capture img_alt %}alt="{{ page.image.alt | xml_escape | default: page.title }}"{% endcapture %}
+    {% if page.image.lqip %}{%- capture lqip -%}lqip="{{ page.image.lqip }}"{%- endcapture -%}{% endif %}
+    <div class="mt-3 mb-4">
+      <img {{ src }} class="preview-img" {{ img_alt }} w="1200" h="630" {{ lqip }}>
+      {%- if page.image.alt -%}<figcaption class="text-center pt-2 pb-2">{{ page.image.alt }}</figcaption>{%- endif -%}
+    </div>
+  {% endif %}
+
+  {% if enable_toc %}
+    <div id="toc-bar" class="d-flex align-items-center justify-content-between invisible">
+      <span class="label text-truncate">{{ page.title }}</span>
+      <button type="button" class="toc-trigger btn me-1">
+        <i class="fa-solid fa-list-ul fa-fw"></i>
+      </button>
+    </div>
+
+    <button id="toc-solo-trigger" type="button" class="toc-trigger btn btn-outline-secondary btn-sm">
+      <span class="label ps-2 pe-1">{{- site.data.locales[lang].panel.toc -}}</span>
+      <i class="fa-solid fa-angle-right fa-fw"></i>
+    </button>
+
+    <dialog id="toc-popup" class="p-0">
+      <div class="header d-flex flex-row align-items-center justify-content-between">
+        <div class="label text-truncate py-2 ms-4">{{- page.title -}}</div>
+        <button id="toc-popup-close" type="button" class="btn-close btn-sm mx-3" aria-label="Close"></button>
+      </div>
+      <div id="toc-popup-content" class="px-4 py-3 pb-4"></div>
+    </dialog>
+  {% endif %}
+
+  <div class="content">
+    {{ content }}
+  </div>
+</article>

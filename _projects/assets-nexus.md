@@ -9,10 +9,6 @@ mermaid: true
 toc: true
 ---
 
-{% if page.source or page.demo %}
-> {% if page.source %}[Source]({{ page.source }}){% endif %}{% if page.source and page.demo %} · {% endif %}{% if page.demo %}[Live demo]({{ page.demo }}){% endif %}
-{% endif %}
-
 ## At a glance
 
 | | |

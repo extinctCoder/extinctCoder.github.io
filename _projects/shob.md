@@ -3,16 +3,14 @@ title: SHOB.COM.BD
 description: B2B and B2C e-commerce platform connecting businesses and consumers.
 order: 1
 tech: [Django, React, Flutter, PostgreSQL, AWS, Kong]
-image: /assets/img/projects/shob.png
+image:
+  path: /assets/img/projects/shob.png
+  alt: SHOB.COM.BD storefront
 source:                # TODO: repo URL
 demo: https://shob.com.bd
 mermaid: true
 toc: true
 ---
-
-{% if page.source or page.demo %}
-> {% if page.source %}[Source]({{ page.source }}){% endif %}{% if page.source and page.demo %} · {% endif %}{% if page.demo %}[Live demo]({{ page.demo }}){% endif %}
-{% endif %}
 
 ## At a glance
 

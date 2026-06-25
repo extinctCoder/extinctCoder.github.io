@@ -127,7 +127,7 @@ defaults:
       path: ""
       type: projects
     values:
-      layout: page
+      layout: project
       permalink: /projects/:title/
       comments: false
   # Theme JS assets — service-worker cache
