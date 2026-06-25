@@ -4,6 +4,7 @@ description: "What building an online learning platform for children taught me a
 date: 2019-09-20 10:00:00 +0600
 categories: [Backend, Web]
 tags: [edtech, web, ux, early-career]
+garden_status: evergreen
 ---
 
 Most software is built for adults who'll tolerate a clunky interface to get their job

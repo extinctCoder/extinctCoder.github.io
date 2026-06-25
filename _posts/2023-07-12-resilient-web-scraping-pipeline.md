@@ -5,6 +5,7 @@ date: 2023-07-12 10:00:00 +0600
 categories: [Backend, Data Engineering]
 tags: [scraping, scrapy, python, data-pipeline, etl]
 mermaid: true
+garden_status: evergreen
 ---
 
 Scraping one website is a script. Scraping **thousands** of heterogeneous

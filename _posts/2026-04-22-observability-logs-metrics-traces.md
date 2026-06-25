@@ -5,6 +5,7 @@ date: 2026-04-22 10:00:00 +0600
 categories: [Backend, Reliability]
 tags: [observability, monitoring, logging, metrics, tracing]
 mermaid: true
+garden_status: evergreen
 ---
 
 When production breaks at 2 a.m., the only thing that matters is how fast you can answer

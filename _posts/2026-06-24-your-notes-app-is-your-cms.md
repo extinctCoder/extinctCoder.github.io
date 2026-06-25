@@ -6,6 +6,7 @@ categories: [DevOps, Automation]
 tags: [obsidian, jekyll, knowledge-management, automation, static-sites]
 mermaid: true
 series: "Obsidian Publishing"
+garden_status: evergreen
 ---
 
 Writing happens in one place; publishing happens in another. You have a thought,

@@ -5,6 +5,7 @@ date: 2023-10-08 10:00:00 +0600
 categories: [Backend, Data Engineering]
 tags: [search, postgresql, elasticsearch, performance]
 mermaid: true
+garden_status: evergreen
 ---
 
 "We need search" is one of the most under-scoped requirements in backend work.

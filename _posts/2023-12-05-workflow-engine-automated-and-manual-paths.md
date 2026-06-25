@@ -5,6 +5,7 @@ date: 2023-12-05 10:00:00 +0600
 categories: [Backend, Architecture]
 tags: [workflow, state-machine, automation, retries, python]
 mermaid: true
+garden_status: evergreen
 ---
 
 Plenty of real-world processes are *mostly* automatable — but not entirely. Some

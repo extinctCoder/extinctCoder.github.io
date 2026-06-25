@@ -1,0 +1,14 @@
+{%- comment -%}
+  Digital-garden maturity badge for the post meta row. Opt-in: renders only when
+  a post sets `garden_status: seedling | budding | evergreen`. Font Awesome glyphs inherit
+  the meta text colour, so they adapt to light/dark automatically — no separate
+  SVGs. Emitted as a <span> so Chirpy's `.post-meta` adds the "·" separator.
+{%- endcomment -%}
+{%- assign _status = page.garden_status | downcase -%}
+{%- if _status == 'seedling' -%}
+  <span><i class="fa-solid fa-seedling fa-fw"></i> seedling</span>
+{%- elsif _status == 'budding' -%}
+  <span><i class="fa-solid fa-leaf fa-fw"></i> budding</span>
+{%- elsif _status == 'evergreen' -%}
+  <span><i class="fa-solid fa-tree fa-fw"></i> evergreen</span>
+{%- endif -%}

@@ -4,6 +4,7 @@ description: "Lessons from my first production system — a C# procurement tool 
 date: 2018-11-15 10:00:00 +0600
 categories: [Backend, .NET]
 tags: [csharp, dotnet, procurement, forecasting, retail, early-career]
+garden_status: evergreen
 ---
 
 This was one of the first real systems I built as a developer — a **C# procurement

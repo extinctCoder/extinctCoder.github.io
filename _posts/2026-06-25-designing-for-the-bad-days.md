@@ -6,6 +6,7 @@ categories: [DevOps, Automation]
 tags: [github-actions, ci-cd, devops, automation, obsidian]
 mermaid: true
 series: "Obsidian Publishing"
+garden_status: budding
 ---
 
 The last post was about making the pipeline run unattended. The flip side of "runs

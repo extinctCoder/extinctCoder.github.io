@@ -6,6 +6,7 @@ categories: [DevOps, Automation]
 tags: [github-actions, obsidian, jekyll, ci-cd, automation]
 mermaid: true
 series: "Obsidian Publishing"
+garden_status: evergreen
 ---
 
 Treating your notes app as your CMS is the idea; this post is the wiring. Two

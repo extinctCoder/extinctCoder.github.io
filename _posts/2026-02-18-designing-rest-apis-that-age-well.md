@@ -5,6 +5,7 @@ date: 2026-02-18 10:00:00 +0600
 categories: [Backend, API Design]
 tags: [api-design, rest, versioning, pagination, http]
 mermaid: true
+garden_status: evergreen
 ---
 
 An API is a **contract**, and contracts are expensive to break. The moment a web app, a

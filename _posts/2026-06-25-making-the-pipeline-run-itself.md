@@ -6,6 +6,7 @@ categories: [DevOps, Automation]
 tags: [github-actions, ci-cd, devops, obsidian, automation]
 mermaid: true
 series: "Obsidian Publishing"
+garden_status: budding
 ---
 
 The wiring from the last post got me a demo: push the vault, watch a post appear. That

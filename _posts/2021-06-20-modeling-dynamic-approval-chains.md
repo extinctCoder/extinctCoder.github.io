@@ -5,6 +5,7 @@ date: 2021-06-20 10:00:00 +0600
 categories: [Backend, Architecture]
 tags: [workflow, approvals, ldap, rbac, hrm]
 mermaid: true
+garden_status: evergreen
 ---
 
 Approval workflows look trivial until you meet the real org chart. Different

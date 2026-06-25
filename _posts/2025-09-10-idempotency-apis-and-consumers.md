@@ -5,6 +5,7 @@ date: 2025-09-10 10:00:00 +0600
 categories: [Backend, Distributed Systems]
 tags: [idempotency, api-design, retries, distributed-systems, reliability]
 mermaid: true
+garden_status: evergreen
 ---
 
 In a distributed system, **retries are not an edge case — they are the norm**. A

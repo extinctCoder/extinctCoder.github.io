@@ -5,6 +5,7 @@ date: 2025-11-12 10:00:00 +0600
 categories: [Backend, Databases]
 tags: [databases, postgresql, indexing, performance, sql]
 mermaid: true
+garden_status: evergreen
 ---
 
 Almost every "the database is slow" ticket comes down to indexing — and almost every

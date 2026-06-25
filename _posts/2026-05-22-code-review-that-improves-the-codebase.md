@@ -4,6 +4,7 @@ description: "How to make code review actually improve the codebase — automate
 date: 2026-05-22 10:00:00 +0600
 categories: [Career, Leadership]
 tags: [code-review, leadership, engineering-culture, quality]
+garden_status: budding
 ---
 
 Code review is the single most reliable lever a tech lead has on quality — and the most

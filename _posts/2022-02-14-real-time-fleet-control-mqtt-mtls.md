@@ -5,6 +5,7 @@ date: 2022-02-14 10:00:00 +0600
 categories: [Backend, Security]
 tags: [mqtt, mtls, iot, agents, security, python]
 mermaid: true
+garden_status: evergreen
 ---
 
 When you need to monitor and control a fleet of machines in real time — endpoints,

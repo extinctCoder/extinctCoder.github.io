@@ -5,6 +5,7 @@ date: 2021-11-10 10:00:00 +0600
 categories: [Backend, Security]
 tags: [policy-engine, security, distributed-systems, agents]
 mermaid: true
+garden_status: evergreen
 ---
 
 The moment business or security rules are hard-coded, every rule change becomes a

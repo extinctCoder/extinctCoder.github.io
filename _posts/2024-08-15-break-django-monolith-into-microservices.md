@@ -5,6 +5,7 @@ date: 2024-08-15 10:00:00 +0600
 categories: [Backend, Architecture]
 tags: [microservices, django, api-gateway, scaling, postgresql]
 mermaid: true
+garden_status: evergreen
 ---
 
 Microservices are not a starting point — they are a response to pain. The fastest

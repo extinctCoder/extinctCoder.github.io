@@ -5,6 +5,7 @@ date: 2025-01-20 10:00:00 +0600
 categories: [Backend, Performance]
 tags: [scaling, performance, django, autoscaling, load-balancing, postgresql]
 mermaid: true
+garden_status: evergreen
 ---
 
 Traffic spikes don't announce themselves politely. A promotional offer can take a

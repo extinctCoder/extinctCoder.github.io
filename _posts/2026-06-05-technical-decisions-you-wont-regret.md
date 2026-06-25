@@ -5,6 +5,7 @@ date: 2026-06-05 10:00:00 +0600
 categories: [Career, Leadership]
 tags: [architecture, decision-making, adr, trade-offs, leadership]
 mermaid: true
+garden_status: budding
 ---
 
 The decisions that hurt most aren't the wrong ones — they're the ones made for the wrong

@@ -4,6 +4,7 @@ description: "Lessons from leading backend teams — shifting from output to out
 date: 2026-05-08 10:00:00 +0600
 categories: [Career, Leadership]
 tags: [leadership, tech-lead, teams, career, engineering-culture]
+garden_status: budding
 ---
 
 The first time I led a team, I made the classic mistake: I tried to stay the best
