@@ -145,32 +145,50 @@ module ObsidianMd
         .gsub(/[ \t]+\^[A-Za-z0-9-]+[ \t]*$/, "")
   end
 
-  # Convert an Obsidian callout block into a Chirpy prompt.
+  # Marker that opens a callout, e.g. `[!tip] Title`. obsidian-export's
+  # CommonMark serializer escapes the brackets (`\[!tip\]`) and may pad/blank the
+  # blockquote, so the brackets are optionally backslash-escaped.
+  CALLOUT_MARKER = /^\\?\[!(\w+)\\?\][+-]?[ \t]*(.*)$/
+
+  # Convert Obsidian callout blocks into Chirpy prompts. Works on the whole
+  # blockquote (not just its first line) so it survives the exporter inserting a
+  # leading blank quote line and escaping the `[!type]` marker. A blockquote with
+  # no marker is left untouched.
   def callouts(text)
     lines = text.lines
     out = []
     i = 0
     while i < lines.length
-      m = lines[i].match(/^[ \t]*>[ \t]*\[!(\w+)\][+-]?[ \t]*(.*)$/)
-      unless m
+      unless lines[i].match?(/^[ \t]*>/)
         out << lines[i]
         i += 1
         next
       end
 
-      type  = CALLOUT_TYPES.fetch(m[1].downcase, "info")
-      title = m[2].strip
-      i += 1
-      body = []
+      block = []
       while i < lines.length && lines[i].match?(/^[ \t]*>/)
-        body << lines[i].sub(/^[ \t]*>[ \t]?/, "").rstrip
+        block << lines[i]
         i += 1
       end
+
+      inner = block.map { |l| l.sub(/^[ \t]*>[ \t]?/, "").rstrip }
+      marker_at = inner.index { |l| l.match?(CALLOUT_MARKER) }
+
+      if marker_at.nil?
+        out.concat(block) # ordinary blockquote
+        next
+      end
+
+      m = inner[marker_at].match(CALLOUT_MARKER)
+      type  = CALLOUT_TYPES.fetch(m[1].downcase, "info")
+      title = m[2].to_s.strip
+      body  = inner[(marker_at + 1)..] || []
+      body.shift while !body.empty? && body.first.empty?
+      body.pop   while !body.empty? && body.last.empty?
 
       quoted = []
       quoted << "**#{title}**" unless title.empty?
       quoted.concat(body)
-      quoted.pop while !quoted.empty? && quoted.last.empty?
       rendered = quoted.map { |l| l.empty? ? ">" : "> #{l}" }.join("\n")
       out << "#{rendered}\n{: .prompt-#{type} }\n"
     end
