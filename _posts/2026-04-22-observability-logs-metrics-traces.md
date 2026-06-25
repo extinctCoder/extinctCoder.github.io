@@ -10,8 +10,10 @@ garden_status: evergreen
 
 When production breaks at 2 a.m., the only thing that matters is how fast you can answer
 *what's wrong and why*. That answer comes from observability — and a system you can't
-observe is one you're operating blind. Knowing **what** to instrument (not just which
-tool to buy) is a core senior-backend skill.
+observe is one you're operating blind — a [scraping pipeline](/posts/resilient-web-scraping-pipeline/)
+that quietly starts returning empty is the canonical case: broken, but raising no
+errors. Knowing **what** to instrument (not just which tool to buy) is a core
+senior-backend skill.
 
 ## The problem
 

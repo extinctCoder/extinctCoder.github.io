@@ -41,7 +41,8 @@ feeds another's. Get the interfaces right and let each discipline own its craft.
 The practices that scale a lead are the unglamorous ones: thorough
 [**code review**](/posts/code-review-that-improves-the-codebase/),
 **documentation** that outlives a conversation, and **mentoring** that makes a junior
-independent. Each is an investment that pays back as leverage — the team gets better
+independent — a habit I first built [teaching robotics to teenagers](/posts/teaching-robotics-and-engineering/).
+Each is an investment that pays back as leverage — the team gets better
 without you in the loop.
 
 ## Technical decisions are people decisions

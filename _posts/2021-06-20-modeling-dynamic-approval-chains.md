@@ -11,8 +11,9 @@ garden_status: evergreen
 Approval workflows look trivial until you meet the real org chart. Different
 departments have different chains, approvers change roles, and "two levels up" means
 something different for everyone. Hard-code the levels and you'll be editing code
-every reorg. The durable approach is to **resolve the chain dynamically from the
-organizational hierarchy**. Here's how, drawn from [Assets Nexus](/projects/assets-nexus/),
+every reorg — a lesson from an earlier [procurement system](/posts/procurement-system-nationwide-retailer/)
+that wired its approvals in by hand. The durable approach is to **resolve the chain
+dynamically from the organizational hierarchy**. Here's how, drawn from [Assets Nexus](/projects/assets-nexus/),
 which routed requisitions for 250+ employees and field agents.
 
 ## The problem
