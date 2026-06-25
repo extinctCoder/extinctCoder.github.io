@@ -88,6 +88,24 @@ jobs:
         with:
           path: "_site${{ steps.pages.outputs.base_path }}"
 
+      # Stamp published_at back into the vault notes (idempotent). The
+      # [skip-sync] message stops notify-site.yml from re-triggering a sync.
+      # Non-blocking: a write-back hiccup must never hold back the deploy.
+      - name: Write published_at back to the vault
+        continue-on-error: true
+        run: |
+          ruby tools/writeback-published.rb vault
+          cd vault
+          git config user.name "vault-sync[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No write-back changes."
+          else
+            git add -A
+            git commit -m "meta: stamp published_at [skip-sync]"
+            git push
+          fi
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest

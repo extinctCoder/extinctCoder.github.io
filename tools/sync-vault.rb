@@ -19,10 +19,11 @@
 # assets of notes that are no longer published, and what the published_at
 # write-back uses to locate the source notes.
 #
-# This ADDS/UPDATES published notes; it does not delete un-published ones yet —
-# a deliberate v1 choice so it can never delete hand-authored posts. Within a
-# single note, though, the asset dir is rebuilt each run, so dropping an image
-# from a note removes it from the site on the next sync.
+# It also removes notes that are no longer published: anything the previous
+# manifest recorded but this run didn't produce is deleted (output + assets).
+# Cleanup only ever touches manifest-recorded paths, so hand-authored posts are
+# never at risk; and a sync that finds zero notes refuses to delete (treated as
+# an export failure, not a real "unpublish everything").
 
 require "yaml"
 require "date"
@@ -38,6 +39,9 @@ FileUtils.mkdir_p("_projects")
 
 # Synced image attachments land here, namespaced per note to avoid collisions.
 ASSET_ROOT = "assets/img/obsidian"
+
+# Record of everything the previous sync produced — drives unpublish cleanup.
+MANIFEST = ".obsidian-sync.json"
 
 def split_doc(path)
   raw = File.read(path)
@@ -96,9 +100,48 @@ def import_note(body, source, slug)
   relocate_images(ObsidianMd.strip_comments(body), source, slug)
 end
 
+def load_manifest(path)
+  return [] unless File.exist?(path)
+
+  JSON.parse(File.read(path))["notes"] || []
+rescue JSON::ParserError
+  []
+end
+
+# Remove the outputs + assets of notes that a previous sync published but this
+# one did not (un-published or deleted in the vault). It only ever touches paths
+# the manifest recorded — hand-authored files are never in the manifest, so they
+# can never be deleted here.
+def reconcile(previous, manifest, counts)
+  # Safety: an empty result against a non-empty history almost always means the
+  # export failed — refuse to delete everything on that basis.
+  if manifest.empty? && !previous.empty?
+    warn "  ⚠ skipping cleanup: 0 notes published but #{previous.size} were before " \
+         "(likely an export failure — refusing to delete published content)"
+    return
+  end
+
+  current_outputs = manifest.map { |e| e["output"] }
+  current_assets  = manifest.flat_map { |e| Array(e["assets"]) }
+
+  previous.each do |entry|
+    next if current_outputs.include?(entry["output"])
+
+    FileUtils.rm_f(entry["output"])
+    Array(entry["assets"]).each { |a| FileUtils.rm_f(a) unless current_assets.include?(a) }
+    counts[:removed] += 1
+  end
+
+  # Prune asset dirs left empty by the removals.
+  Dir.glob(File.join(ASSET_ROOT, "*")).each do |dir|
+    FileUtils.rm_rf(dir) if File.directory?(dir) && Dir.empty?(dir)
+  end
+end
+
+previous = load_manifest(MANIFEST) # what the last sync produced (for cleanup)
 published = []
 manifest = []
-counts = { posts: 0, projects: 0, skipped: 0, images: 0 }
+counts = { posts: 0, projects: 0, skipped: 0, images: 0, removed: 0 }
 
 # ── blog/ -> _posts/ ────────────────────────────────────────────────────────
 Dir.glob(File.join(export, "blog", "*.md")).sort.each do |f|
@@ -143,10 +186,12 @@ Dir.glob(File.join(export, "projects", "*.md")).sort.each do |f|
   counts[:images] += assets.size
 end
 
-# The manifest — stable order so diffs stay clean across runs.
-manifest.sort_by! { |entry| entry["output"] }
-File.write(".obsidian-sync.json", "#{JSON.pretty_generate("notes" => manifest)}\n")
+# Clean up notes that are no longer published, then write the fresh manifest.
+manifest.sort_by! { |entry| entry["output"] } # stable order → clean diffs
+reconcile(previous, manifest, counts)
+File.write(MANIFEST, "#{JSON.pretty_generate("notes" => manifest)}\n")
 
 puts "✓ synced #{counts[:posts]} post(s), #{counts[:projects]} project(s), " \
      "#{counts[:images]} image(s)" \
+     "#{counts[:removed].positive? ? ", removed #{counts[:removed]}" : ""}" \
      "#{counts[:skipped].positive? ? " — skipped #{counts[:skipped]}" : ""}"
