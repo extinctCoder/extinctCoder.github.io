@@ -6,6 +6,7 @@ categories:
 - Meta
 tags:
 - obsidian
+published_at: 2026-06-26 02:35:24 +0600
 ---
 
 

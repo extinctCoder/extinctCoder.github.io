@@ -7,6 +7,14 @@
       "assets": [
 
       ]
+    },
+    {
+      "source": "blog/hello-from-the-vault.md",
+      "kind": "post",
+      "output": "_posts/2026-06-26-hello-from-the-vault.md",
+      "assets": [
+        "assets/img/obsidian/hello-from-the-vault/diagram.png"
+      ]
     }
   ]
 }
