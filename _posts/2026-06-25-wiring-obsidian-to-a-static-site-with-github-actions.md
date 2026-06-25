@@ -5,13 +5,13 @@ date: 2026-06-25 10:00:00 +0600
 categories: [DevOps, Automation]
 tags: [github-actions, obsidian, jekyll, ci-cd, automation]
 mermaid: true
+series: "Obsidian Publishing"
 ---
 
-[Part 1](/posts/your-notes-app-is-your-cms/) made the case for treating your notes app
-as your CMS. This is the wiring: two repositories — a **private vault** (the source)
-and a **static site** (the published view) — connected so that pushing to the vault
-makes the site rebuild itself, and the site writes a status back to the vault when it's
-done.
+Treating your notes app as your CMS is the idea; this post is the wiring. Two
+repositories — a **private vault** (the source) and a **static site** (the published
+view) — connected so that pushing to the vault makes the site rebuild itself, and the
+site writes a status back to the vault when it's done.
 
 ## The architecture
 

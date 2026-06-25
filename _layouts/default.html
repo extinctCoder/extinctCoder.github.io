@@ -37,7 +37,16 @@ layout: compress
           <aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 text-muted">
             {% unless page.panel == false %}
               <div class="access">
-                {% include_cached update-list.html lang=lang %}
+                {% assign in_series = false %}
+                {% if page.series %}
+                  {% assign series_parts = site.posts | where: "series", page.series %}
+                  {% if series_parts.size > 1 %}{% assign in_series = true %}{% endif %}
+                {% endif %}
+                {% if in_series %}
+                  {% include series-panel.html %}
+                {% else %}
+                  {% include_cached update-list.html lang=lang %}
+                {% endif %}
                 {% include_cached trending-tags.html lang=lang %}
               </div>
             {% endunless %}

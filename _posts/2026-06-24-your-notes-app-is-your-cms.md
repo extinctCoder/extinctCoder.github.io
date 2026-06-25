@@ -5,6 +5,7 @@ date: 2026-06-24 10:00:00 +0600
 categories: [DevOps, Automation]
 tags: [obsidian, jekyll, knowledge-management, automation, static-sites]
 mermaid: true
+series: "Obsidian Publishing"
 ---
 
 Writing happens in one place; publishing happens in another. You have a thought,
@@ -76,5 +77,5 @@ the place you already write — and letting a pipeline do the rest — turns pub
 from a task into a side effect of thinking. Your notes app becomes your CMS, and your
 site becomes the part of your mind you decided to show.
 
-> Part 2 covers the actual wiring — two repos, GitHub Actions, and the one loop that
-> will bite you if you're not careful.
+> Next up: the actual wiring — two repos, GitHub Actions, and the one loop that will
+> bite you if you're not careful.

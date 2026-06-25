@@ -1,0 +1,38 @@
+---
+---
+
+@use 'abstracts/variables' with (
+  $theme: '{{ site.theme_mode }}'
+);
+
+/* prettier-ignore */
+@use 'main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+';
+
+/* append your custom style below */
+
+/* Series panel — mirror the TOC's active-item look. Chirpy's own
+   `.is-active-link` is scoped to `#toc-wrapper`, so we replicate the rules here:
+   muted links, no underline, blue hover, and the current part in the TOC
+   highlight colour with a heavier weight and a left accent bar. Every item
+   reserves the bar's width (transparent) so they stay aligned. */
+#access-series a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  border-left: 1px solid transparent;
+  padding-left: 0.75rem;
+
+  &:hover {
+    color: var(--toc-highlight);
+  }
+}
+
+#access-series a[aria-current='page'] {
+  color: var(--toc-highlight);
+  font-weight: 600;
+  border-left-color: var(--toc-highlight);
+}
