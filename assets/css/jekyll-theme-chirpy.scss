@@ -45,9 +45,12 @@
    Recently Updated panel, which gets this from #access-lastmod). */
 #access-backlinks a {
   color: inherit;
-  text-decoration: none;
+  border-bottom: none; /* no underline at rest, like Recently Updated */
 
+  /* mirror Chirpy's %link-hover (used by #access-lastmod): orange + underline on hover */
   &:hover {
-    color: var(--toc-highlight);
+    color: #d2603a !important;
+    border-bottom: 1px solid #d2603a;
+    text-decoration: none;
   }
 }
