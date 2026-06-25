@@ -17,7 +17,7 @@ site writes a status back to the vault when it's done.
 
 ```mermaid
 flowchart TB
-    Push[Push to vault repo] -->|repository_dispatch| WF[Site workflow]
+    Push[Push to vault repo] -->|workflow_dispatch| WF[Site workflow]
     subgraph Site[Site repo · GitHub Actions]
         WF --> Checkout[Checkout vault · PAT]
         Checkout --> Export[obsidian-export → clean Markdown]
@@ -35,17 +35,27 @@ each.
 
 ## 1. Trigger one repo from another
 
-The vault's `on: push` workflow fires a **`repository_dispatch`** event at the site
-repo (a small API call with a token). The site repo listens for it:
+The vault's `on: push` workflow makes one authenticated API call that fires the site's
+**`workflow_dispatch`** — so the site side only has to listen for that:
 
 ```yaml
 on:
-  repository_dispatch:
-    types: [vault-updated]
-  workflow_dispatch: # manual fallback
+  workflow_dispatch:
 ```
 
-That's the "magic happens in the background" link — a vault push becomes a site build.
+The vault side is a single `curl` to the dispatch endpoint:
+
+```yaml
+- run: |
+    curl -fsS -X POST \
+      -H "Authorization: Bearer ${{ secrets.SITE_DISPATCH_TOKEN }}" \
+      https://api.github.com/repos/you/your-site/actions/workflows/sync.yml/dispatches \
+      -d '{"ref":"main"}'
+```
+
+(`repository_dispatch` is the other option; I went with `workflow_dispatch` because the
+target is one specific workflow.) That's the "magic happens in the background" link — a
+vault push becomes a site build.
 
 ## 2. Pull a private repo into the workflow
 
@@ -76,7 +86,8 @@ is also the trap. The site pushes a commit to the vault → that push re-fires t
 
 Break the cycle deliberately, with **one** of:
 
-- the vault's trigger workflow **ignores bot-authored commits** (or `[skip ci]`),
+- the vault's trigger workflow **ignores commits tagged `[skip-sync]`** (what I did — the
+  write-back commit carries it, so the trigger skips its own echo),
 - a **`paths-ignore`** so front-matter-only write-backs don't trigger, or
 - make the sync **idempotent** — if nothing real changed, it's a no-op and converges.
 
@@ -99,9 +110,13 @@ secrets. One credential wires all three moves above.
 
 ## Takeaway
 
-Cross-repo automation in GitHub Actions comes down to three primitives —
-`repository_dispatch` to trigger, an authenticated `checkout` to pull, and an
+Cross-repo automation in GitHub Actions comes down to three primitives — a
+`workflow_dispatch` to trigger, an authenticated `checkout` to pull, and an
 authenticated push to write back. Lean on `obsidian-export` for the hard conversion,
 guard the write-back loop, and gate the deploy with validation. The result is the
 payoff from Part 1: you write and flag a note, and a pipeline quietly turns it into a
 deployed page.
+
+> Next up: getting it *working* was the easy part. The next post is the unglamorous
+> half — making the pipeline run itself unattended, and the bugs that only show up once
+> it's actually running.

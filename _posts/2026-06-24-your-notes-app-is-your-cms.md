@@ -58,8 +58,9 @@ The mechanics are simple to state:
 3. The site **builds and deploys** itself — same as any other commit.
 
 The interesting engineering is in step 2 (converting one tool's flavor of Markdown to
-another's) and in wiring two repositories together so the whole thing runs untouched —
-which is the subject of the next post.
+another's) and in wiring two repositories together so the whole thing runs untouched.
+That turned out to be more than one post's worth of work — the rest of this series gets
+into the wiring, and then the unglamorous part: making it run itself without breaking.
 
 ## When it's worth it (and when it isn't)
 
