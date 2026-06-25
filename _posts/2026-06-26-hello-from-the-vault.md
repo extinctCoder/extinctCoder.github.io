@@ -1,7 +1,7 @@
 ---
 title: Hello from the Vault
 description: The first note published straight from my Obsidian vault — if you're reading this on the site, the pipeline works end to end.
-date: 2026-06-26 09:00:00 +0600
+date: 2026-06-26 01:00:00 +0600
 categories:
 - Meta
 tags:
