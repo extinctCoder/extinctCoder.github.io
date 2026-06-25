@@ -1,0 +1,100 @@
+name: Sync from Vault
+
+# Fired by the vault repo (workflow_dispatch via SITE_DISPATCH_TOKEN), or run manually.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write # commit synced content
+  pages: write
+  id-token: write
+
+# Don't interrupt an in-flight sync
+concurrency:
+  group: vault-sync
+  cancel-in-progress: false
+
+env:
+  RUBY_VERSION: "3.3"
+  VAULT_REPO: extinctCoder/obsidian_vault
+
+jobs:
+  sync:
+    name: Sync & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout site
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history for the posts-lastmod plugin
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+
+      - name: Checkout vault (private)
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.VAULT_REPO }}
+          token: ${{ secrets.VAULT_TOKEN }}
+          path: vault
+
+      - name: Cache obsidian-export
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/obsidian-export
+          key: obsidian-export-v25
+
+      - name: Install obsidian-export
+        run: command -v obsidian-export || cargo install obsidian-export
+
+      - name: Export vault to clean Markdown
+        run: obsidian-export vault vault-export
+
+      - name: Sync published notes → _posts / _projects
+        run: ruby tools/sync-vault.rb vault-export
+
+      - name: Validate content shape # reject malformed notes before publishing
+        run: ruby tools/validate-content.rb
+
+      - name: Commit synced content
+        run: |
+          git config user.name "vault-sync[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add _posts _projects
+          if git diff --staged --quiet; then
+            echo "No content changes to commit."
+          else
+            git commit -m "content: sync from vault [skip ci]"
+            git push
+          fi
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v4
+
+      - name: Build (production)
+        run: bundle exec jekyll build -d "_site${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "_site${{ steps.pages.outputs.base_path }}"
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    needs: sync
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
