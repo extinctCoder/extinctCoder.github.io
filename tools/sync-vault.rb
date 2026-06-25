@@ -70,6 +70,36 @@ def front_matter(fm, fm_text, body)
   "---\n#{kept}---\n"
 end
 
+# Raster formats worth shrinking (skip SVG/GIF).
+RASTER = %w[.png .jpg .jpeg .webp].freeze
+
+# Find an ImageMagick CLI once (nil if none — downscaling is then skipped).
+def image_tool
+  return @image_tool if defined?(@image_tool)
+
+  @image_tool = %w[magick convert].find { |t| system("command -v #{t} > /dev/null 2>&1") }
+end
+
+# Best-effort: shrink oversized images (>1600px) and strip metadata. No-op
+# without ImageMagick. Converts to a temp file and only swaps it in on success,
+# so a failed conversion can never corrupt the copied image.
+def downscale(path)
+  tmp = nil
+  return unless image_tool
+  return unless RASTER.include?(File.extname(path).downcase)
+
+  tmp = "#{path}.opt"
+  ok = system(image_tool, path, "-resize", "1600x1600>", "-strip", "-quality", "82", tmp,
+              out: File::NULL, err: File::NULL)
+  if ok && File.exist?(tmp) && File.size(tmp).positive?
+    FileUtils.mv(tmp, path)
+  else
+    FileUtils.rm_f(tmp)
+  end
+rescue StandardError
+  FileUtils.rm_f(tmp) if tmp
+end
+
 # Copy the images a note references out of the export tree into the site assets,
 # rewriting each embed to its published `/assets/...` URL. obsidian-export has
 # already copied the attachments into the export dir, so paths resolve relative
@@ -88,6 +118,7 @@ def relocate_images(content, source, slug)
     FileUtils.mkdir_p(dest_dir)
     dest = File.join(dest_dir, File.basename(src))
     FileUtils.cp(src, dest)
+    downscale(dest)
     assets << dest
     "/#{dest}"
   end

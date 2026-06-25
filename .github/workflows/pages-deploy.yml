@@ -20,10 +20,11 @@ permissions:
   pages: write
   id-token: write
 
-# One deploy at a time; cancel superseded in-progress runs
+# Serialize with the vault sync (same group) so the two never deploy to Pages at
+# once. Don't cancel in flight — a running sync may be mid content-commit.
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: pages-deploy
+  cancel-in-progress: false
 
 env:
   RUBY_VERSION: "3.3"

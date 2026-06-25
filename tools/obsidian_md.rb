@@ -209,12 +209,24 @@ module ObsidianMd
         if target =~ %r{\A[a-z][a-z0-9+.\-]*://}i || target.start_with?("/")
           full
         else
-          new_url = yield(CGI.unescape(target))
-          new_url ? "![#{alt}](#{new_url})" : full
+          decoded = CGI.unescape(target)
+          new_url = yield(decoded)
+          new_url ? "![#{humanize_alt(alt, decoded)}](#{new_url})" : full
         end
       end
       unmask_inline_code(masked, codes)
     end
+  end
+
+  # obsidian-export emits a bare filename as the alt text for `![[img.png]]`,
+  # which is poor for accessibility/SEO. Humanize a filename-looking alt
+  # ("my-chart.png" -> "My chart"); a real author-written alt is kept as-is.
+  def humanize_alt(alt, target)
+    stem = File.basename(target, File.extname(target))
+    return alt unless alt.empty? || alt == File.basename(target) || alt == stem
+
+    humanized = stem.tr("-_", "  ").strip.sub(/\A./, &:upcase)
+    humanized.empty? ? alt : humanized
   end
 
   # Rewrite obsidian-export's `[text](Note.md)` links to site URLs (or plain text

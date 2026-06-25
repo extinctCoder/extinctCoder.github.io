@@ -9,9 +9,10 @@ permissions:
   pages: write
   id-token: write
 
-# Don't interrupt an in-flight sync
+# Shared with Build & Deploy (same group) so the two never deploy to Pages at
+# once; never cancel — a sync may be mid content-commit.
 concurrency:
-  group: vault-sync
+  group: pages-deploy
   cancel-in-progress: false
 
 env:
