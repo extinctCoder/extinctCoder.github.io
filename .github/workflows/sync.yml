@@ -52,7 +52,9 @@ jobs:
         run: command -v obsidian-export || cargo install obsidian-export
 
       - name: Export vault to clean Markdown
-        run: obsidian-export vault vault-export
+        run: |
+          mkdir -p vault-export
+          obsidian-export vault vault-export
 
       - name: Sync published notes → _posts / _projects
         run: ruby tools/sync-vault.rb vault-export
