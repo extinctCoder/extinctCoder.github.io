@@ -66,7 +66,7 @@ jobs:
         run: |
           git config user.name "vault-sync[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add _posts _projects
+          git add _posts _projects assets .obsidian-sync.json
           if git diff --staged --quiet; then
             echo "No content changes to commit."
           else

@@ -57,6 +57,7 @@ module ObsidianMd
       text = callouts(text)
       masked, codes = mask_inline_code(text)
       masked = highlights(masked)
+      masked = strip_block_ids(masked)
       masked = rewrite_links(masked, resolve)
       unmask_inline_code(masked, codes)
     end
@@ -136,6 +137,14 @@ module ObsidianMd
     text.gsub(/==(?!\s)(.+?)(?<!\s)==/) { "<mark>#{Regexp.last_match(1)}</mark>" }
   end
 
+  # Remove Obsidian block-reference markers (`^block-id`) — internal anchors that
+  # carry no meaning on the site. Whole-line ids drop the line; trailing ids drop
+  # just the suffix.
+  def strip_block_ids(text)
+    text.gsub(/^\^[A-Za-z0-9-]+[ \t]*\n?/, "")
+        .gsub(/[ \t]+\^[A-Za-z0-9-]+[ \t]*$/, "")
+  end
+
   # Convert an Obsidian callout block into a Chirpy prompt.
   def callouts(text)
     lines = text.lines
@@ -166,6 +175,28 @@ module ObsidianMd
       out << "#{rendered}\n{: .prompt-#{type} }\n"
     end
     out.join
+  end
+
+  # Rewrite local image embeds `![alt](path)`. The block receives the decoded,
+  # note-relative target and must return the new URL (after copying the file) —
+  # or nil to leave the embed untouched. Remote (`http://…`) and already-absolute
+  # (`/…`) targets are never touched. Fence- and inline-code-aware.
+  def rewrite_images(text)
+    on_prose(text) do |chunk|
+      masked, codes = mask_inline_code(chunk)
+      masked = masked.gsub(/!\[([^\]]*)\]\(([^)\s]+)\)/) do
+        alt    = Regexp.last_match(1)
+        target = Regexp.last_match(2)
+        full   = Regexp.last_match(0)
+        if target =~ %r{\A[a-z][a-z0-9+.\-]*://}i || target.start_with?("/")
+          full
+        else
+          new_url = yield(CGI.unescape(target))
+          new_url ? "![#{alt}](#{new_url})" : full
+        end
+      end
+      unmask_inline_code(masked, codes)
+    end
   end
 
   # Rewrite obsidian-export's `[text](Note.md)` links to site URLs (or plain text

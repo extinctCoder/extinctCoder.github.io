@@ -164,7 +164,7 @@ exclude:
   - package*.json
   - vault # transient private-vault checkout during sync — never publish
   - vault-export # transient obsidian-export output during sync — never publish
-  - published-notes.txt # sync bookkeeping written at build time — keep private
+  - .obsidian-sync.json # sync manifest (notes + copied assets) — bookkeeping, not content
 
 # --- Auto-generated category & tag pages ---
 jekyll-archives:
