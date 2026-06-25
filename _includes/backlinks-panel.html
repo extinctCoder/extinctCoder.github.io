@@ -1,0 +1,17 @@
+<!-- Backlinks panel: lists the posts that link to this one (page.backlinks is
+     populated by _plugins/backlinks.rb). Replaces "Recently Updated" on posts
+     that have backlinks. Plain include (per-page data), styled via #access-backlinks. -->
+
+{% if page.backlinks and page.backlinks.size > 0 %}
+  <section id="access-backlinks">
+    <h2 class="panel-heading">Linked from</h2>
+    <ul class="content list-unstyled ps-0 pb-1 ms-1 mt-2">
+      {% for post in page.backlinks %}
+        <li class="text-truncate lh-lg">
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+  <!-- #access-backlinks -->
+{% endif %}

@@ -44,6 +44,8 @@ layout: compress
                 {% endif %}
                 {% if in_series %}
                   {% include series-panel.html %}
+                {% elsif page.backlinks and page.backlinks.size > 0 %}
+                  {% include backlinks-panel.html %}
                 {% else %}
                   {% include_cached update-list.html lang=lang %}
                 {% endif %}

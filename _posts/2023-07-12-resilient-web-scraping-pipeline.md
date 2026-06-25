@@ -48,7 +48,9 @@ flowchart LR
 
 - **Scrapy over hand-rolled requests.** You get concurrency, retries, throttling,
   and pipelines for free. I wrote a **spider variant per source** — same output
-  schema, different selectors — so the messy per-site logic stays isolated.
+  schema, different selectors — so the messy per-site logic stays isolated. (Make the
+  write side [idempotent](/posts/idempotency-apis-and-consumers/) too, so a retried
+  page never produces a duplicate record.)
 - **Content-hash change detection.** Cache each page's **URL map and a SHA of its
   content**; on the next run, re-scrape only when the hash changes. This turns a
   full nightly crawl into cheap incremental updates and slashes load on both ends.
@@ -62,7 +64,8 @@ flowchart LR
 ## Pitfalls to watch for
 
 - **Brittle selectors.** Sites redesign. Isolate selectors per source and alert when
-  a spider's yield drops to zero — that's your "site changed" signal.
+  a spider's yield drops to zero — that's your "site changed" signal, and exactly the
+  kind of thing [observability](/posts/observability-logs-metrics-traces/) is for.
 - **Silent data drift.** Automated quality checks should gate ingestion. On Study
   Giveaway, automation got data ~95% clean; a thin layer of **manual cleanup** took
   it to ~100% for the fields that mattered.

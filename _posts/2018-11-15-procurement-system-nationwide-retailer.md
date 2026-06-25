@@ -26,7 +26,9 @@ forecast** feeding the buying decisions.
 I built it in **C# (.NET)**, backed by a relational database. The core pieces were:
 
 - A **central procurement model** that consolidated demand and stock across all
-  branches into one view.
+  branches into one view. (Procurement at scale also runs on
+  [approval chains](/posts/modeling-dynamic-approval-chains/) — something I'd model
+  properly in later systems.)
 - A **daily forecasting step** that updated price expectations so procurement
   decisions used fresh numbers rather than stale ones.
 - Branch-level data feeding the centre, so a nationwide picture stayed consistent.

@@ -49,11 +49,12 @@ stateDiagram-v2
 - **A routing/decision step** that picks the path (automated vs manual) based on
   data — e.g. "is this destination integrated?" On Study Giveaway, integrated
   universities went out via API; the rest were routed to a human operator.
-- **Idempotent transitions + bounded retries.** Failures are expected. Make each
-  transition safe to re-run, and cap retries with a backoff and a terminal
-  "needs attention" state — don't retry forever.
+- **[Idempotent transitions](/posts/idempotency-apis-and-consumers/) + bounded
+  retries.** Failures are expected. Make each transition safe to re-run, and cap
+  retries with a backoff and a terminal "needs attention" state — don't retry forever.
 - **A human task queue** for the manual path: a clear work list operators pull from,
-  with the item's full context attached.
+  with the item's full context attached. [Approval chains](/posts/modeling-dynamic-approval-chains/)
+  are a common instance of this — each approval is just another transition.
 - **An audit trail** of every transition — who/what moved it and when.
 
 ## Pitfalls to watch for

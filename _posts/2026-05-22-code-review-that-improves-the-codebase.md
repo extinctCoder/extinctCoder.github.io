@@ -30,7 +30,9 @@ rest.
   attention on what a tool can enforce.
 - **Review for correctness, design, and maintainability.** Is the approach sound? Does it
   fit the existing architecture? Will the next person understand it? Are the edge cases
-  and failure paths handled? That's where review earns its keep.
+  and failure paths handled? That's where review earns its keep — it's often where a
+  [technical decision](/posts/technical-decisions-you-wont-regret/) gets surfaced and
+  questioned for the first time.
 - **Ask questions, don't issue commands.** "What happens if this is called twice?" invites
   a conversation and teaches; "change this" shuts it down. Reviews are how a team learns,
   not just how code gets gated.

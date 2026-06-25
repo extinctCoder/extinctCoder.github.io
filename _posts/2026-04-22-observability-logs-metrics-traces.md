@@ -42,7 +42,9 @@ flowchart TB
   used on [Study Giveaway](/projects/study-giveaway/), makes this practical).
 - **Metrics that matter.** For request-driven services, track **RED** — Rate, Errors,
   Duration. For resources, **USE** — Utilization, Saturation, Errors. Alert on these, not
-  on vanity counts.
+  on vanity counts. These are also the signals you
+  [autoscale on](/posts/scaling-django-backend-to-170k-users/) — you can't scale on load
+  you aren't measuring.
 - **Distributed tracing.** In a microservice system, a single request crosses many
   services; tracing (OpenTelemetry-style) shows exactly which hop was slow or failed —
   invaluable for a gateway-fronted system like [SHOB.COM.BD](/projects/shob/).

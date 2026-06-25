@@ -12,7 +12,8 @@ In a distributed system, **retries are not an edge case — they are the norm**.
 network blips, a client times out and resends, a queue redelivers a message. If your
 operation isn't idempotent, that innocent retry becomes a double charge, a duplicate
 order, or two emails. Idempotency is the property that makes retries safe, and
-designing for it is a baseline senior-backend skill.
+designing for it is a baseline senior-backend skill — and a core part of
+[designing APIs that age well](/posts/designing-rest-apis-that-age-well/).
 
 ## The problem
 
@@ -56,7 +57,8 @@ sequenceDiagram
 - **Database constraints as a backstop.** A unique constraint on a natural key turns a
   duplicate insert into a catchable error instead of a duplicate row.
 - **Idempotent consumers.** Queues deliver *at least once*. Give each message an ID and
-  keep a processed-IDs table so reprocessing is a no-op.
+  keep a processed-IDs table so reprocessing is a no-op. The same property makes
+  [retried workflow steps](/posts/workflow-engine-automated-and-manual-paths/) safe.
 - **Upserts** (`INSERT ... ON CONFLICT`) for "create or update" semantics.
 
 ## Pitfalls to watch for

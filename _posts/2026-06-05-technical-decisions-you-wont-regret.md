@@ -38,9 +38,10 @@ flowchart TB
 
 ## What this looks like in practice
 
-- **Decide for the stage you're in.** On [SHOB.COM.BD](/projects/shob/) I split a monolith
-  into microservices — but only once uneven scaling and deploy coupling actually hurt.
-  Splitting earlier would have bought distributed-systems pain with no payoff.
+- **Decide for the stage you're in.** On [SHOB.COM.BD](/projects/shob/) I
+  [split a monolith into microservices](/posts/break-django-monolith-into-microservices/)
+  — but only once uneven scaling and deploy coupling actually hurt. Splitting earlier
+  would have bought distributed-systems pain with no payoff.
 - **Choose the boring option deliberately.** On the same system I **skipped a message
   broker** and kept service calls synchronous. A broker is "more correct" on paper; the
   simplicity was worth more than the decoupling at that stage. That was a conscious

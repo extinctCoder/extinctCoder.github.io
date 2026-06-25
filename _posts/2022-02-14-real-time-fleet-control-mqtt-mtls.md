@@ -49,7 +49,9 @@ flowchart TB
 
 - **MQTT for transport.** Lightweight pub/sub built for exactly this: many clients,
   unreliable networks, low overhead. Agents publish events to topics; the control
-  plane publishes commands back. No polling.
+  plane publishes commands back. No polling. That event stream is also your
+  [telemetry](/posts/observability-logs-metrics-traces/) — the same channel tells you
+  the fleet's health, not just its state.
 - **Mutual TLS for identity.** Don't authenticate fleets with a shared token — one
   leak compromises everyone. Give each agent its **own client certificate** so the
   broker authenticates *and* the agent verifies the server. Identity becomes

@@ -60,7 +60,9 @@ flowchart TB
 
 - **API gateway** — put one in front (Kong, or an ingress + gateway). It gives you
   one entry point for routing, auth, rate limiting, and load balancing. Don't make
-  clients talk to services directly.
+  clients talk to services directly. Each service still needs an
+  [API that ages well](/posts/designing-rest-apis-that-age-well/) — a stable contract
+  matters even more once it's an inter-service boundary.
 - **Database per service.** This is the part teams skip — and regret. Shared tables
   re-couple the services you just separated. On SHOB each service owned its own
   database (on a single Postgres server, to keep ops simple) so schemas could evolve
@@ -76,7 +78,9 @@ flowchart TB
 ## Pitfalls to watch for
 
 - **Premature splitting.** Microservices tax you with network failures, distributed
-  debugging, and data consistency. Earn them.
+  debugging, and data consistency — and you'll need real
+  [observability](/posts/observability-logs-metrics-traces/) to operate them at all.
+  Earn them.
 - **Distributed transactions.** The moment a flow spans services (order → payment →
   loyalty), you can't lean on a DB transaction. Design for eventual consistency and
   idempotent retries instead.

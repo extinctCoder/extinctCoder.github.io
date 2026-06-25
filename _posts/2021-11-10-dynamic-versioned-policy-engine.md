@@ -40,6 +40,9 @@ flowchart TB
 
 - **Rules as data, not code.** Represent policy as structured data (conditions →
   actions) the evaluator interprets. Changing a rule is a data update, not a release.
+  The same data-driven approach lets policy steer a
+  [workflow engine](/posts/workflow-engine-automated-and-manual-paths/) without
+  hard-coding its branches.
 - **Versioning.** Every policy has a version. Nodes report which version they run, so
   you can confirm a rollout reached the whole fleet — and roll back cleanly.
 - **Signed distribution.** A policy that can lock or wipe a machine is dangerous if

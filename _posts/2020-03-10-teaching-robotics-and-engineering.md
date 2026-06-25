@@ -32,7 +32,8 @@ in software. The feedback loop is just more honest with hardware.
 
 The habit of meeting someone at their level, checking for understanding, and adjusting
 my explanation didn't stay in the classroom. It's the same skill I now use in code
-review, in design discussions, and in leading teams — translating between people who
+review, in design discussions, and in
+[leading teams](/posts/lessons-leading-backend-teams/) — translating between people who
 hold different pieces of the picture.
 
 ## What I took away
@@ -47,4 +48,5 @@ hold different pieces of the picture.
 Teaching robotics looked like a detour, but it sharpened the exact skills — clarity,
 debugging discipline, communication — that I've leaned on at every step since. Years
 later, leading backend teams, I realised I'd been practising for it in a room full of
-curious kids and stubborn robots.
+curious kids and stubborn robots — the same audience I'd later build an
+[online learning platform for](/posts/online-learning-platform-for-kids/).

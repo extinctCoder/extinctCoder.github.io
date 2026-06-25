@@ -19,7 +19,9 @@ it, drawn from scaling [SHOB.COM.BD](/projects/shob/).
 A single big server hits a ceiling — CPU, memory, or connections — and everyone
 behind it slows down or errors out. Vertical scaling (a bigger box) buys time but not
 elasticity. You need to scale **horizontally** and make sure nothing in the request
-path is a hidden serial chokepoint.
+path is a hidden serial chokepoint. (When horizontal scaling of the monolith stops
+being enough, that's often the signal to
+[break it into services](/posts/break-django-monolith-into-microservices/).)
 
 ## How to approach it
 
@@ -48,8 +50,9 @@ flowchart TB
 - **Autoscaling on a real signal.** Scale on CPU/load (SHOB used a 90% threshold).
   Tune the cooldown so you don't thrash.
 - **The database is the usual ceiling.** App servers scale cheaply; your DB doesn't.
-  Add indexes for hot queries, use **connection pooling** (instances × connections
-  adds up fast), and add **read replicas** if reads dominate.
+  Add [indexes for hot queries](/posts/database-indexing-for-engineers/), use
+  **connection pooling** (instances × connections adds up fast), and add
+  **read replicas** if reads dominate.
 - **Cache the hot path.** A cache in front of expensive reads is often the single
   biggest win — it takes pressure off the DB exactly when traffic peaks.
 
@@ -61,7 +64,9 @@ flowchart TB
   run multiple instances.
 - **Cold autoscaling.** New instances take time to boot and warm up; spikes can
   outrun them. Pre-scale for known events (like sales) instead of reacting.
-- **No load testing.** You don't know your ceiling until you simulate the spike.
+- **No load testing.** You don't know your ceiling until you simulate the spike — and
+  you can't find the real bottleneck without
+  [observability](/posts/observability-logs-metrics-traces/) in place first.
 
 ## Takeaways
 

@@ -49,7 +49,7 @@ flowchart LR
   way, everywhere.
 - **Don't leak internal models.** Serialize to explicit response schemas so a DB column
   rename isn't an API break.
-- **Idempotency for writes** (see the idempotency post) so clients can retry safely.
+- **Idempotency for writes** (see [Idempotency: APIs and consumers that survive retries](/posts/idempotency-apis-and-consumers/)) so clients can retry safely.
 
 ## Pitfalls to watch for
 

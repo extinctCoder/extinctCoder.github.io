@@ -38,7 +38,8 @@ feeds another's. Get the interfaces right and let each discipline own its craft.
 
 ## Multiply yourself
 
-The practices that scale a lead are the unglamorous ones: thorough **code review**,
+The practices that scale a lead are the unglamorous ones: thorough
+[**code review**](/posts/code-review-that-improves-the-codebase/),
 **documentation** that outlives a conversation, and **mentoring** that makes a junior
 independent. Each is an investment that pays back as leverage — the team gets better
 without you in the loop.
@@ -48,7 +49,7 @@ without you in the loop.
 Choosing a monolith over microservices, or synchronous calls over a message queue,
 isn't only an architecture call — it shapes how the team works, what they can debug,
 and how fast they can move. The "best" technical answer that the team can't operate is
-the wrong answer.
+the wrong answer (more on [making decisions you won't regret](/posts/technical-decisions-you-wont-regret/)).
 
 ## Pitfalls I learned the hard way
 

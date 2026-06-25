@@ -47,7 +47,9 @@ flowchart TB
 - **Selectivity decides usage.** Indexing a boolean or low-cardinality column rarely
   helps — the planner correctly prefers a scan. Index columns that narrow results a lot.
 - **Specialized indexes.** `GIN` for full-text and JSONB, partial indexes for "hot"
-  subsets (`WHERE active`), expression indexes when you filter on `lower(email)`.
+  subsets (`WHERE active`), expression indexes when you filter on `lower(email)`. (When
+  full-text search itself is the question, [Postgres full-text vs Elasticsearch](/posts/postgres-fulltext-vs-elasticsearch/)
+  goes deeper.)
 - **Covering indexes** let an index-only scan answer a query without touching the table.
 
 ## Pitfalls to watch for

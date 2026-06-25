@@ -44,8 +44,9 @@ flowchart TB
   rather than duplicating it. Assets Nexus drove its chains from the HRM-sourced
   structure, with LDAP/OAuth for identity.
 - **Resolve the chain at request time.** Walk from the requester up their reporting
-  line, inserting approvers per policy (e.g. amount thresholds add a finance step).
-  The chain reflects the org *as it is now*, automatically.
+  line, inserting approvers per [policy](/posts/dynamic-versioned-policy-engine/) (e.g.
+  amount thresholds add a finance step). The chain reflects the org *as it is now*,
+  automatically.
 - **Role-based, not person-based, steps.** Approvals target a *role* ("department
   head"), resolved to the current holder — so staff changes don't break in-flight
   requests.
