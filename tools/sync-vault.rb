@@ -19,6 +19,7 @@
 require "yaml"
 require "date"
 require "fileutils"
+require_relative "obsidian_md"
 
 export = ARGV[0] || "vault-export"
 abort "✗ export dir not found: #{export}" unless Dir.exist?(export)
@@ -41,10 +42,16 @@ def slugify(str)
   str.to_s.downcase.strip.gsub(/[^a-z0-9]+/, "-").gsub(/(^-|-$)/, "")
 end
 
-# rebuild front matter from the original text, minus the `publish:` line
-def front_matter_without_publish(fm_text)
-  body = fm_text.lines.reject { |l| l =~ /^\s*publish\s*:/i }.join
-  "---\n#{body.sub(/\A\n+/, "")}---\n"
+# Rebuild front matter from the original text, minus the `publish:` line, and
+# add math:/mermaid: when the body needs them — so the committed file carries the
+# flag (the content validator and Chirpy both read it there, not at render time).
+def front_matter(fm, fm_text, body)
+  kept = fm_text.lines.reject { |l| l =~ /^\s*publish\s*:/i }.join.sub(/\A\n+/, "")
+  kept += "\n" unless kept.end_with?("\n")
+  ObsidianMd.flags(body).each do |flag, needed|
+    kept += "#{flag}: true\n" if needed && !fm.key?(flag)
+  end
+  "---\n#{kept}---\n"
 end
 
 published = []
@@ -65,7 +72,7 @@ Dir.glob(File.join(export, "blog", "*.md")).sort.each do |f|
   slug = slugify(fm["title"] || File.basename(f, ".md"))
   out  = File.join("_posts", "#{d.strftime('%Y-%m-%d')}-#{slug}.md")
 
-  File.write(out, front_matter_without_publish(fm_text) + body)
+  File.write(out, front_matter(fm, fm_text, body) + ObsidianMd.strip_comments(body))
   published << f
   counts[:posts] += 1
 end
@@ -78,7 +85,7 @@ Dir.glob(File.join(export, "projects", "*.md")).sort.each do |f|
   slug = slugify(fm["title"] || File.basename(f, ".md"))
   out  = File.join("_projects", "#{slug}.md")
 
-  File.write(out, front_matter_without_publish(fm_text) + body)
+  File.write(out, front_matter(fm, fm_text, body) + ObsidianMd.strip_comments(body))
   published << f
   counts[:projects] += 1
 end
