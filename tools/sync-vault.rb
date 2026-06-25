@@ -79,14 +79,39 @@ def slugify(str)
 end
 
 # Rebuild front matter from the (possibly cover-rewritten) text, minus the
-# `publish:` line, adding math:/mermaid: when the body needs them.
-def front_matter(fm, fm_text, body)
+# `publish:` line, adding math:/mermaid: when the body needs them, plus any
+# redirect_from URLs (from a rename — see rename_redirects).
+def front_matter(fm, fm_text, body, redirects = [])
   kept = fm_text.lines.reject { |l| l =~ /^\s*publish\s*:/i }.join.sub(/\A\n+/, "")
   kept += "\n" unless kept.end_with?("\n")
   ObsidianMd.flags(body).each do |flag, needed|
     kept += "#{flag}: true\n" if needed && !fm.key?(flag)
   end
+  unless redirects.empty?
+    kept += "redirect_from:\n"
+    redirects.each { |u| kept += "  - #{u}\n" }
+  end
   "---\n#{kept}---\n"
+end
+
+# Read the redirect_from list already on a (previous) output file, so a rename
+# chain (A->B->C) keeps every old URL alive, not just the most recent.
+def read_redirect_from(output)
+  return [] unless output && File.file?(output)
+
+  fm, = split_doc(output)
+  fm ? Array(fm["redirect_from"]) : []
+end
+
+# If a note kept its source but its URL changed (title renamed → new slug), the
+# old URL should redirect to the new one. Returns the URLs to redirect from.
+def rename_redirects(prev_entry, new_url)
+  return [] unless prev_entry
+
+  old_url = prev_entry["url"]
+  return [] if old_url.nil? || old_url == new_url
+
+  ([old_url] + read_redirect_from(prev_entry["output"])).uniq
 end
 
 def image_tool
@@ -227,9 +252,10 @@ end
 # ── main ──────────────────────────────────────────────────────────────────────
 puts "▶ dry run — no files will be written\n\n" if DRY
 previous = load_manifest(MANIFEST)
+prev_by_source = previous.to_h { |e| [e["source"], e] } # for rename → redirect detection
 published = []
 manifest = []
-counts = { posts: 0, projects: 0, skipped: 0, images: 0, removed: 0 }
+counts = { posts: 0, projects: 0, skipped: 0, images: 0, removed: 0, redirects: 0 }
 
 # blog/ -> _posts/
 Dir.glob(File.join(export, "blog", "*.md")).sort.each do |f|
@@ -245,15 +271,18 @@ Dir.glob(File.join(export, "blog", "*.md")).sort.each do |f|
   d = fm["date"].respond_to?(:strftime) ? fm["date"] : Date.parse(fm["date"].to_s)
   slug = slugify(fm["title"] || File.basename(f, ".md"))
   out  = File.join("_posts", "#{d.strftime('%Y-%m-%d')}-#{slug}.md")
+  url  = "/posts/#{slug}/"
+  source = f.delete_prefix("#{export}/")
+  redirects = fm.key?("redirect_from") ? [] : rename_redirects(prev_by_source[source], url)
 
   content, new_fm_text, assets = import_note(fm, fm_text, body, f, slug)
-  fs_write(out, front_matter(fm, new_fm_text, body) + content)
+  fs_write(out, front_matter(fm, new_fm_text, body, redirects) + content)
 
   published << f
-  manifest << { "source" => f.delete_prefix("#{export}/"), "kind" => "post",
-                "output" => out, "assets" => assets }
+  manifest << { "source" => source, "kind" => "post", "output" => out, "url" => url, "assets" => assets }
   counts[:posts] += 1
   counts[:images] += assets.size
+  counts[:redirects] += redirects.size
 end
 
 # projects/ -> _projects/
@@ -263,15 +292,18 @@ Dir.glob(File.join(export, "projects", "*.md")).sort.each do |f|
 
   slug = slugify(fm["title"] || File.basename(f, ".md"))
   out  = File.join("_projects", "#{slug}.md")
+  url  = "/projects/#{slug}/"
+  source = f.delete_prefix("#{export}/")
+  redirects = fm.key?("redirect_from") ? [] : rename_redirects(prev_by_source[source], url)
 
   content, new_fm_text, assets = import_note(fm, fm_text, body, f, slug)
-  fs_write(out, front_matter(fm, new_fm_text, body) + content)
+  fs_write(out, front_matter(fm, new_fm_text, body, redirects) + content)
 
   published << f
-  manifest << { "source" => f.delete_prefix("#{export}/"), "kind" => "project",
-                "output" => out, "assets" => assets }
+  manifest << { "source" => source, "kind" => "project", "output" => out, "url" => url, "assets" => assets }
   counts[:projects] += 1
   counts[:images] += assets.size
+  counts[:redirects] += redirects.size
 end
 
 manifest.sort_by! { |entry| entry["output"] } # stable order → clean diffs
@@ -281,5 +313,6 @@ fs_write(MANIFEST, "#{JSON.pretty_generate("notes" => manifest)}\n")
 puts "✓ synced #{counts[:posts]} post(s), #{counts[:projects]} project(s), " \
      "#{counts[:images]} image(s)" \
      "#{counts[:removed].positive? ? ", removed #{counts[:removed]}" : ""}" \
+     "#{counts[:redirects].positive? ? ", #{counts[:redirects]} redirect(s)" : ""}" \
      "#{counts[:skipped].positive? ? " — skipped #{counts[:skipped]}" : ""}" \
      "#{DRY ? "  (dry run)" : ""}"

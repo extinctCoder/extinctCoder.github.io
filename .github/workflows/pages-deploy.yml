@@ -13,6 +13,12 @@ on:
       - CLAUDE.md
       - REQUIREMENTS.md
   workflow_dispatch: # allow manual runs from the Actions tab
+  # Scheduled publishing: rebuild every 6h so a future-dated post (already synced
+  # and committed, just hidden by Jekyll's future:false) goes live within a few
+  # hours of its date passing — no push needed. GitHub cron isn't punctual, so
+  # treat timing as approximate.
+  schedule:
+    - cron: "0 */6 * * *"
 
 # Least-privilege scopes required for Pages deployment
 permissions:
