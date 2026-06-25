@@ -108,3 +108,7 @@ without anyone watching. Getting the first post to appear was a weekend. Making 
 something I'd trust unattended was the real project, and it's the half that actually
 demonstrates the engineering: state, idempotency, concurrency, and designing for the bad
 day before it arrives.
+
+> Speaking of the bad day — the next post is entirely about it: validating bad input,
+> failing loud instead of silent, and handling the awkward verbs (un-publish, rename,
+> schedule) without surprises.
