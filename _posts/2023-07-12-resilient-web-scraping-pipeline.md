@@ -1,5 +1,6 @@
 ---
 title: "Building a Resilient Web-Scraping Pipeline"
+description: "Building a resilient web-scraping pipeline: per-source spiders, hash-based incremental crawls, proxy rotation, and data-quality gates."
 date: 2023-07-12 10:00:00 +0600
 categories: [Backend, Data Engineering]
 tags: [scraping, scrapy, python, data-pipeline, etl]

@@ -1,5 +1,6 @@
 ---
 title: "Postgres Full-Text Search vs Elasticsearch: How to Choose"
+description: "A practical framework for choosing search — start with PostgreSQL full-text, and move to Elasticsearch only when requirements demand it."
 date: 2023-10-08 10:00:00 +0600
 categories: [Backend, Data Engineering]
 tags: [search, postgresql, elasticsearch, performance]

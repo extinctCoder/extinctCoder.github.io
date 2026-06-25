@@ -1,5 +1,6 @@
 ---
 title: "Scaling a Django Backend to 170K Concurrent Users"
+description: "How to scale a Django backend to 170K concurrent users — stateless services, autoscaling, load balancing, and protecting the database."
 date: 2025-01-20 10:00:00 +0600
 categories: [Backend, Performance]
 tags: [scaling, performance, django, autoscaling, load-balancing, postgresql]

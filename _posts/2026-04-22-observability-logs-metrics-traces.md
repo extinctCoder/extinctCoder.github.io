@@ -1,5 +1,6 @@
 ---
 title: "Observability: Logs, Metrics, and Traces — What to Instrument"
+description: "What to instrument for observability — structured logs, RED/USE metrics, and distributed traces — and how to alert only on what's actionable."
 date: 2026-04-22 10:00:00 +0600
 categories: [Backend, Reliability]
 tags: [observability, monitoring, logging, metrics, tracing]

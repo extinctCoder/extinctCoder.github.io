@@ -1,5 +1,6 @@
 ---
 title: "Modeling Dynamic Approval Chains from an Org Hierarchy"
+description: "How to model approval workflows that resolve dynamically from your org hierarchy — so a reorg never means a code change."
 date: 2021-06-20 10:00:00 +0600
 categories: [Backend, Architecture]
 tags: [workflow, approvals, ldap, rbac, hrm]

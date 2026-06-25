@@ -1,5 +1,6 @@
 ---
 title: "Making Technical Decisions You Won't Regret"
+description: "A repeatable framework for technical decisions you won't regret — frame the trade-offs, decide for your stage, and write down the why."
 date: 2026-06-05 10:00:00 +0600
 categories: [Career, Leadership]
 tags: [architecture, decision-making, adr, trade-offs, leadership]

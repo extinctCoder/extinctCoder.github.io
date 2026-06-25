@@ -1,5 +1,6 @@
 ---
 title: "Designing REST APIs That Age Well"
+description: "How to design REST APIs that age well — versioning, pagination, consistent errors, and backward compatibility that won't break clients."
 date: 2026-02-18 10:00:00 +0600
 categories: [Backend, API Design]
 tags: [api-design, rest, versioning, pagination, http]

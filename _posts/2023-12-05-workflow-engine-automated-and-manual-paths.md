@@ -1,5 +1,6 @@
 ---
 title: "Designing a Workflow Engine with Automated and Manual Paths"
+description: "Designing a workflow engine for processes that mix automation, human steps, and retries — using an explicit state machine, not tangled conditionals."
 date: 2023-12-05 10:00:00 +0600
 categories: [Backend, Architecture]
 tags: [workflow, state-machine, automation, retries, python]

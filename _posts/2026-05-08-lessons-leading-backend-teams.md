@@ -1,5 +1,6 @@
 ---
 title: "Lessons from Leading Backend Teams"
+description: "Lessons from leading backend teams — shifting from output to outcomes, sharing context, owning interfaces, and multiplying your impact."
 date: 2026-05-08 10:00:00 +0600
 categories: [Career, Leadership]
 tags: [leadership, tech-lead, teams, career, engineering-culture]

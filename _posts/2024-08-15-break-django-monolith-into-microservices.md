@@ -1,5 +1,6 @@
 ---
 title: "When to Break a Django Monolith into Microservices"
+description: "When to break a Django monolith into microservices — and how, with the strangler pattern, an API gateway, and a database per service."
 date: 2024-08-15 10:00:00 +0600
 categories: [Backend, Architecture]
 tags: [microservices, django, api-gateway, scaling, postgresql]

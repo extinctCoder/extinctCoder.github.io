@@ -1,5 +1,6 @@
 ---
 title: "A Dynamic, Versioned Policy Engine: Evaluate Locally, Manage Centrally"
+description: "Designing a policy engine where rules are data: authored and versioned centrally, evaluated locally so decisions stay instant and offline-safe."
 date: 2021-11-10 10:00:00 +0600
 categories: [Backend, Security]
 tags: [policy-engine, security, distributed-systems, agents]

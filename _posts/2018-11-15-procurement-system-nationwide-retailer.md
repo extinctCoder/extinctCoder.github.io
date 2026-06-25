@@ -1,5 +1,6 @@
 ---
 title: "Building a Procurement System for a Nationwide Retailer"
+description: "Lessons from my first production system — a C# procurement tool with daily price forecasting across a nationwide retailer's branches."
 date: 2018-11-15 10:00:00 +0600
 categories: [Backend, .NET]
 tags: [csharp, dotnet, procurement, forecasting, retail, early-career]

@@ -1,5 +1,6 @@
 ---
 title: "Real-Time Fleet Control with MQTT over mTLS"
+description: "Building real-time fleet control with MQTT over mutual TLS — push not poll, per-device identity, and local-first enforcement."
 date: 2022-02-14 10:00:00 +0600
 categories: [Backend, Security]
 tags: [mqtt, mtls, iot, agents, security, python]

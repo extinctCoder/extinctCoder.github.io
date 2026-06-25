@@ -1,5 +1,6 @@
 ---
 title: "Idempotency: Designing APIs and Consumers That Survive Retries"
+description: "How to design APIs and message consumers that survive retries safely — idempotency keys, HTTP semantics, and idempotent consumers."
 date: 2025-09-10 10:00:00 +0600
 categories: [Backend, Distributed Systems]
 tags: [idempotency, api-design, retries, distributed-systems, reliability]

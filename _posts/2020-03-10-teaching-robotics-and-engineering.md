@@ -1,5 +1,6 @@
 ---
 title: "What Teaching Robotics Taught Me About Engineering"
+description: "How teaching robotics sharpened the skills that matter most in software: clear explanation, systematic debugging, and communication."
 date: 2020-03-10 10:00:00 +0600
 categories: [Career, Growth]
 tags: [robotics, teaching, communication, career, growth]

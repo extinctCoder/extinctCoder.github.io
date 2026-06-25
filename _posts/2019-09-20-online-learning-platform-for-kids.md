@@ -1,5 +1,6 @@
 ---
 title: "Building an Online Learning Platform for Children"
+description: "What building an online learning platform for children taught me about designing simple, forgiving software for non-technical users."
 date: 2019-09-20 10:00:00 +0600
 categories: [Backend, Web]
 tags: [edtech, web, ux, early-career]

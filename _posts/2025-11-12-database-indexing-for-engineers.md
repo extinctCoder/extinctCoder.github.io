@@ -1,5 +1,6 @@
 ---
 title: "Database Indexing for Engineers: What to Index and Why Queries Still Scan"
+description: "A backend engineer's mental model for database indexing — what to index, the leftmost-prefix rule, and why a query still does a full scan."
 date: 2025-11-12 10:00:00 +0600
 categories: [Backend, Databases]
 tags: [databases, postgresql, indexing, performance, sql]

@@ -1,5 +1,6 @@
 ---
 title: "Code Review That Actually Improves the Codebase"
+description: "How to make code review actually improve the codebase — automate style, focus on design, ask questions, and keep PRs small."
 date: 2026-05-22 10:00:00 +0600
 categories: [Career, Leadership]
 tags: [code-review, leadership, engineering-culture, quality]
