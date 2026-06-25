@@ -3,27 +3,23 @@
 #
 # Sync published notes from an exported Obsidian vault into the Jekyll site.
 #
-#   ruby tools/sync-vault.rb <export-dir>
+#   ruby tools/sync-vault.rb <export-dir> [--dry-run]
 #
 # <export-dir> holds `blog/` and `projects/` as clean Markdown (output of
 # `obsidian-export`). Only notes with `publish: true` are copied in:
 #   blog/*.md     -> _posts/YYYY-MM-DD-slug.md
 #   projects/*.md -> _projects/slug.md
-# The `publish` flag is stripped on the way in; %%comments%% are removed; math:/
-# mermaid: flags are added when needed; and referenced images are copied into
-# assets/img/obsidian/<slug>/ with their embeds rewritten.
+# On the way in: the `publish` flag is stripped; %%comments%% removed; math:/
+# mermaid: flags added when needed; body images AND a front-matter cover `image:`
+# are copied into assets/img/obsidian/<slug>/ (downscaled if ImageMagick is
+# present) with their paths rewritten.
 #
-# Everything this run produced is recorded in `.obsidian-sync.json` (the sync
-# manifest): for each note its source, output file, and copied assets. That
-# record is what a future cleanup pass (sync v2) reads to delete the outputs and
-# assets of notes that are no longer published, and what the published_at
-# write-back uses to locate the source notes.
+# It also removes notes that are no longer published — anything the previous
+# manifest (.obsidian-sync.json) recorded but this run didn't produce. Cleanup
+# only ever touches manifest-recorded paths (hand-authored files are never at
+# risk) and refuses to run if the result looks like an export failure.
 #
-# It also removes notes that are no longer published: anything the previous
-# manifest recorded but this run didn't produce is deleted (output + assets).
-# Cleanup only ever touches manifest-recorded paths, so hand-authored posts are
-# never at risk; and a sync that finds zero notes refuses to delete (treated as
-# an export failure, not a real "unpublish everything").
+# --dry-run prints what would be written/removed without touching anything.
 
 require "yaml"
 require "date"
@@ -31,18 +27,37 @@ require "json"
 require "fileutils"
 require_relative "obsidian_md"
 
+DRY = !ARGV.delete("--dry-run").nil?
 export = ARGV[0] || "vault-export"
 abort "✗ export dir not found: #{export}" unless Dir.exist?(export)
 
-FileUtils.mkdir_p("_posts")
-FileUtils.mkdir_p("_projects")
-
 # Synced image attachments land here, namespaced per note to avoid collisions.
 ASSET_ROOT = "assets/img/obsidian"
-
 # Record of everything the previous sync produced — drives unpublish cleanup.
 MANIFEST = ".obsidian-sync.json"
+# Raster formats worth shrinking (skip SVG/GIF).
+RASTER = %w[.png .jpg .jpeg .webp].freeze
 
+# ── filesystem ops (honor --dry-run) ─────────────────────────────────────────
+def fs_write(path, content)
+  DRY ? puts("  • would write #{path}") : File.write(path, content)
+end
+
+def fs_cp(src, dest)
+  DRY ? puts("  • would copy → #{dest}") : FileUtils.cp(src, dest)
+end
+
+def fs_rm(path)
+  DRY ? puts("  • would remove #{path}") : FileUtils.rm_f(path)
+end
+
+def fs_mkdir(path)
+  FileUtils.mkdir_p(path) unless DRY
+end
+fs_mkdir("_posts")
+fs_mkdir("_projects")
+
+# ── helpers ──────────────────────────────────────────────────────────────────
 def split_doc(path)
   raw = File.read(path)
   return [nil, nil, raw] unless raw.start_with?("---")
@@ -52,15 +67,19 @@ def split_doc(path)
 
   fm = YAML.safe_load(parts[1], permitted_classes: [Date, Time], aliases: true) || {}
   [fm, parts[1], parts[2]] # parsed hash, raw front-matter text, body
+rescue Psych::SyntaxError => e
+  # One unparseable note must never crash the whole sync — skip it with a notice.
+  # (The vault validator catches these upstream, but this is defense in depth.)
+  warn "  skip (front matter won't parse): #{path} — #{e.message}"
+  [nil, nil, raw]
 end
 
 def slugify(str)
   str.to_s.downcase.strip.gsub(/[^a-z0-9]+/, "-").gsub(/(^-|-$)/, "")
 end
 
-# Rebuild front matter from the original text, minus the `publish:` line, and
-# add math:/mermaid: when the body needs them — so the committed file carries the
-# flag (the content validator and Chirpy both read it there, not at render time).
+# Rebuild front matter from the (possibly cover-rewritten) text, minus the
+# `publish:` line, adding math:/mermaid: when the body needs them.
 def front_matter(fm, fm_text, body)
   kept = fm_text.lines.reject { |l| l =~ /^\s*publish\s*:/i }.join.sub(/\A\n+/, "")
   kept += "\n" unless kept.end_with?("\n")
@@ -70,10 +89,6 @@ def front_matter(fm, fm_text, body)
   "---\n#{kept}---\n"
 end
 
-# Raster formats worth shrinking (skip SVG/GIF).
-RASTER = %w[.png .jpg .jpeg .webp].freeze
-
-# Find an ImageMagick CLI once (nil if none — downscaling is then skipped).
 def image_tool
   return @image_tool if defined?(@image_tool)
 
@@ -81,10 +96,11 @@ def image_tool
 end
 
 # Best-effort: shrink oversized images (>1600px) and strip metadata. No-op
-# without ImageMagick. Converts to a temp file and only swaps it in on success,
-# so a failed conversion can never corrupt the copied image.
+# without ImageMagick or in --dry-run. Converts to a temp file and only swaps it
+# in on success, so a failed conversion can never corrupt the copied image.
 def downscale(path)
   tmp = nil
+  return if DRY
   return unless image_tool
   return unless RASTER.include?(File.extname(path).downcase)
 
@@ -100,35 +116,70 @@ rescue StandardError
   FileUtils.rm_f(tmp) if tmp
 end
 
-# Copy the images a note references out of the export tree into the site assets,
-# rewriting each embed to its published `/assets/...` URL. obsidian-export has
-# already copied the attachments into the export dir, so paths resolve relative
-# to the note. The note's asset dir is rebuilt fresh, so dropped images vanish.
-# Returns [rewritten_body, sorted_asset_paths].
-def relocate_images(content, source, slug)
-  note_dir = File.dirname(source)
-  assets = []
-  FileUtils.rm_rf(File.join(ASSET_ROOT, slug)) # refresh — leave no orphaned images
+# Pick a destination name unique within this note (so two same-named images
+# from different folders don't clobber each other).
+def unique_name(name, used)
+  return name unless used.include?(name)
 
-  body = ObsidianMd.rewrite_images(content) do |target|
+  base = File.basename(name, File.extname(name))
+  ext  = File.extname(name)
+  i = 1
+  i += 1 while used.include?("#{base}-#{i}#{ext}")
+  "#{base}-#{i}#{ext}"
+end
+
+def copy_asset(src, dest_dir, used)
+  fs_mkdir(dest_dir)
+  name = unique_name(File.basename(src), used)
+  used << name
+  dest = File.join(dest_dir, name)
+  fs_cp(src, dest)
+  downscale(dest)
+  dest
+end
+
+def cover_path(fm)
+  img = fm["image"]
+  return img if img.is_a?(String)
+
+  img["path"] if img.is_a?(Hash) # Chirpy also accepts { path:, alt: }
+end
+
+# Copy a front-matter cover image into assets and rewrite its path. Returns the
+# (possibly updated) front-matter text.
+def relocate_cover(fm, fm_text, note_dir, dest_dir, used, assets)
+  path = cover_path(fm)
+  return fm_text unless path.is_a?(String) && !path.empty?
+  return fm_text if path =~ %r{\A([a-z][a-z0-9+.\-]*://|/)}i # external / already absolute
+
+  src = File.expand_path(path, note_dir)
+  return fm_text unless File.file?(src)
+
+  dest = copy_asset(src, dest_dir, used)
+  assets << dest
+  fm_text.sub(path, "/#{dest}")
+end
+
+# Import one note: strip comments, relocate body images + cover (deduped,
+# downscaled). Returns [content, rewritten_front_matter_text, sorted_assets].
+def import_note(fm, fm_text, body, source, slug)
+  note_dir = File.dirname(source)
+  dest_dir = File.join(ASSET_ROOT, slug)
+  DRY ? puts("  • would refresh #{dest_dir}/") : FileUtils.rm_rf(dest_dir) # no orphaned assets
+  assets = []
+  used = []
+
+  content = ObsidianMd.rewrite_images(ObsidianMd.strip_comments(body)) do |target|
     src = File.expand_path(target, note_dir)
     next nil unless File.file?(src)
 
-    dest_dir = File.join(ASSET_ROOT, slug)
-    FileUtils.mkdir_p(dest_dir)
-    dest = File.join(dest_dir, File.basename(src))
-    FileUtils.cp(src, dest)
-    downscale(dest)
+    dest = copy_asset(src, dest_dir, used)
     assets << dest
     "/#{dest}"
   end
 
-  [body, assets.sort]
-end
-
-# Full import transform: strip comments (privacy), then relocate images.
-def import_note(body, source, slug)
-  relocate_images(ObsidianMd.strip_comments(body), source, slug)
+  new_fm_text = relocate_cover(fm, fm_text, note_dir, dest_dir, used, assets)
+  [content, new_fm_text, assets.sort]
 end
 
 def load_manifest(path)
@@ -139,42 +190,48 @@ rescue JSON::ParserError
   []
 end
 
-# Remove the outputs + assets of notes that a previous sync published but this
-# one did not (un-published or deleted in the vault). It only ever touches paths
-# the manifest recorded — hand-authored files are never in the manifest, so they
-# can never be deleted here.
+# Remove outputs + assets of notes a previous sync published but this one didn't.
+# Only touches manifest-recorded paths. Refuses to run if the drop looks like an
+# export failure rather than a real un-publish.
 def reconcile(previous, manifest, counts)
-  # Safety: an empty result against a non-empty history almost always means the
-  # export failed — refuse to delete everything on that basis.
-  if manifest.empty? && !previous.empty?
-    warn "  ⚠ skipping cleanup: 0 notes published but #{previous.size} were before " \
-         "(likely an export failure — refusing to delete published content)"
+  current_outputs = manifest.map { |e| e["output"] }
+  to_remove = previous.reject { |e| current_outputs.include?(e["output"]) }
+
+  # Suspected export failure (nothing, or a big chunk, gone since last time):
+  # don't delete — and keep the would-be-removed notes IN the manifest, so they
+  # stay tracked and disk/manifest don't drift.
+  suspect = (manifest.empty? && !previous.empty?) ||
+            (previous.size >= 4 && to_remove.size > previous.size / 2)
+  if suspect && to_remove.any?
+    warn "  ⚠ skipping cleanup: would remove #{to_remove.size} of #{previous.size} notes — " \
+         "suspected export problem. Keeping them tracked; remove by hand if that's intended."
+    manifest.concat(to_remove)
+    manifest.sort_by! { |e| e["output"] }
     return
   end
 
-  current_outputs = manifest.map { |e| e["output"] }
-  current_assets  = manifest.flat_map { |e| Array(e["assets"]) }
-
-  previous.each do |entry|
-    next if current_outputs.include?(entry["output"])
-
-    FileUtils.rm_f(entry["output"])
-    Array(entry["assets"]).each { |a| FileUtils.rm_f(a) unless current_assets.include?(a) }
+  current_assets = manifest.flat_map { |e| Array(e["assets"]) }
+  to_remove.each do |entry|
+    fs_rm(entry["output"])
+    Array(entry["assets"]).each { |a| fs_rm(a) unless current_assets.include?(a) }
     counts[:removed] += 1
   end
 
-  # Prune asset dirs left empty by the removals.
+  return if DRY
+
   Dir.glob(File.join(ASSET_ROOT, "*")).each do |dir|
     FileUtils.rm_rf(dir) if File.directory?(dir) && Dir.empty?(dir)
   end
 end
 
-previous = load_manifest(MANIFEST) # what the last sync produced (for cleanup)
+# ── main ──────────────────────────────────────────────────────────────────────
+puts "▶ dry run — no files will be written\n\n" if DRY
+previous = load_manifest(MANIFEST)
 published = []
 manifest = []
 counts = { posts: 0, projects: 0, skipped: 0, images: 0, removed: 0 }
 
-# ── blog/ -> _posts/ ────────────────────────────────────────────────────────
+# blog/ -> _posts/
 Dir.glob(File.join(export, "blog", "*.md")).sort.each do |f|
   fm, fm_text, body = split_doc(f)
   next unless fm && fm["publish"] == true
@@ -189,8 +246,8 @@ Dir.glob(File.join(export, "blog", "*.md")).sort.each do |f|
   slug = slugify(fm["title"] || File.basename(f, ".md"))
   out  = File.join("_posts", "#{d.strftime('%Y-%m-%d')}-#{slug}.md")
 
-  content, assets = import_note(body, f, slug)
-  File.write(out, front_matter(fm, fm_text, body) + content)
+  content, new_fm_text, assets = import_note(fm, fm_text, body, f, slug)
+  fs_write(out, front_matter(fm, new_fm_text, body) + content)
 
   published << f
   manifest << { "source" => f.delete_prefix("#{export}/"), "kind" => "post",
@@ -199,7 +256,7 @@ Dir.glob(File.join(export, "blog", "*.md")).sort.each do |f|
   counts[:images] += assets.size
 end
 
-# ── projects/ -> _projects/ ─────────────────────────────────────────────────
+# projects/ -> _projects/
 Dir.glob(File.join(export, "projects", "*.md")).sort.each do |f|
   fm, fm_text, body = split_doc(f)
   next unless fm && fm["publish"] == true
@@ -207,8 +264,8 @@ Dir.glob(File.join(export, "projects", "*.md")).sort.each do |f|
   slug = slugify(fm["title"] || File.basename(f, ".md"))
   out  = File.join("_projects", "#{slug}.md")
 
-  content, assets = import_note(body, f, slug)
-  File.write(out, front_matter(fm, fm_text, body) + content)
+  content, new_fm_text, assets = import_note(fm, fm_text, body, f, slug)
+  fs_write(out, front_matter(fm, new_fm_text, body) + content)
 
   published << f
   manifest << { "source" => f.delete_prefix("#{export}/"), "kind" => "project",
@@ -217,12 +274,12 @@ Dir.glob(File.join(export, "projects", "*.md")).sort.each do |f|
   counts[:images] += assets.size
 end
 
-# Clean up notes that are no longer published, then write the fresh manifest.
 manifest.sort_by! { |entry| entry["output"] } # stable order → clean diffs
 reconcile(previous, manifest, counts)
-File.write(MANIFEST, "#{JSON.pretty_generate("notes" => manifest)}\n")
+fs_write(MANIFEST, "#{JSON.pretty_generate("notes" => manifest)}\n")
 
 puts "✓ synced #{counts[:posts]} post(s), #{counts[:projects]} project(s), " \
      "#{counts[:images]} image(s)" \
      "#{counts[:removed].positive? ? ", removed #{counts[:removed]}" : ""}" \
-     "#{counts[:skipped].positive? ? " — skipped #{counts[:skipped]}" : ""}"
+     "#{counts[:skipped].positive? ? " — skipped #{counts[:skipped]}" : ""}" \
+     "#{DRY ? "  (dry run)" : ""}"
