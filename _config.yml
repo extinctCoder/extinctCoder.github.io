@@ -130,6 +130,7 @@ defaults:
       layout: project
       permalink: /projects/:title/
       comments: false
+      panel: false # hide the blog feed panels (Recently Updated / Trending Tags)
   # Theme JS assets — service-worker cache
   - scope:
       path: assets/js/dist
