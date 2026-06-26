@@ -1,0 +1,23 @@
+---
+permalink: /llms.txt
+sitemap: false
+---
+# {{ site.title }}
+
+> {{ site.tagline | default: site.description }}
+
+A backend engineer's blog and digital garden — written in Obsidian and published to this
+static site by an automated pipeline. Posts carry a maturity (seedling / budding /
+evergreen) and link to one another. Full post text is at {{ '/llms-full.txt' | absolute_url }}.
+
+## Posts
+{% assign _posts = site.posts | sort: 'date' | reverse -%}
+{% for post in _posts %}
+- [{{ post.title }}]({{ post.url | absolute_url }}){% if post.description %}: {{ post.description | strip_newlines }}{% endif %}
+{%- endfor %}
+
+## Projects
+{% assign _projects = site.projects | sort: 'order' -%}
+{% for project in _projects %}
+- [{{ project.title }}]({{ project.url | absolute_url }}){% if project.description %}: {{ project.description | strip_newlines }}{% endif %}
+{%- endfor %}

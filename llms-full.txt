@@ -1,0 +1,18 @@
+---
+permalink: /llms-full.txt
+sitemap: false
+---
+# {{ site.title }} — full content
+
+> Full text of every published post, concatenated for LLM ingestion. Curated index: {{ '/llms.txt' | absolute_url }}.
+
+{% assign _posts = site.posts | sort: 'date' | reverse -%}
+{% for post in _posts %}
+# {{ post.title }}
+{{ post.url | absolute_url }}{% if post.description %}
+{{ post.description | strip_newlines }}{% endif %}
+
+{{ post.content | markdownify | strip_html | strip }}
+
+---
+{% endfor %}
