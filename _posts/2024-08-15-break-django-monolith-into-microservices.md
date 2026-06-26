@@ -46,7 +46,7 @@ flowchart TB
     GW --> Catalog[Catalog Service]
     GW --> Order[Order Service]
     GW --> Payment[Payment Service]
-    subgraph DBs[Database per service]
+    subgraph DBs["Database per service"]
         CatalogDB[(catalog_db)]
         OrderDB[(order_db)]
         PaymentDB[(payment_db)]

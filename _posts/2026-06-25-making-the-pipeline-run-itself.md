@@ -31,7 +31,7 @@ flowchart LR
     Push[Vault push] -->|workflow_dispatch| Sync[Site sync]
     Sync --> Build[Build + deploy]
     Build --> Stamp[Write published_at back]
-    Stamp -. tagged '[skip-sync]' .-> Push
+    Stamp -. "tagged [skip-sync]" .-> Push
 ```
 
 Three operational ideas are what turned the demo into something I trust.

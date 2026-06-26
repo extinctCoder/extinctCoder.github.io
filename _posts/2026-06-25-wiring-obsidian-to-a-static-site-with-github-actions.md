@@ -19,15 +19,15 @@ site writes a status back to the vault when it's done.
 ```mermaid
 flowchart TB
     Push[Push to vault repo] -->|workflow_dispatch| WF[Site workflow]
-    subgraph Site[Site repo · GitHub Actions]
-        WF --> Checkout[Checkout vault · PAT]
-        Checkout --> Export[obsidian-export → clean Markdown]
-        Export --> Filter{publish: true?}
-        Filter -- yes --> Content[Write _posts / _projects]
+    subgraph Site["Site repo · GitHub Actions"]
+        WF --> Checkout["Checkout vault · PAT"]
+        Checkout --> Export["obsidian-export → clean Markdown"]
+        Export --> Filter{"publish: true?"}
+        Filter -- yes --> Content["Write _posts / _projects"]
         Filter -- no --> Drop[Skip]
-        Content --> Build[Build → validate → deploy]
+        Content --> Build["Build → validate → deploy"]
     end
-    Build -->|push published_at| Vault[(Vault repo)]
+    Build -->|push published_at| Vault[("Vault repo")]
     Vault -. loop-guarded .-> Push
 ```
 

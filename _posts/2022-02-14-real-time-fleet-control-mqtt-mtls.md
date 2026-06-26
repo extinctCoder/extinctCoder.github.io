@@ -32,7 +32,7 @@ Think in three layers: **agents** at the edge, a **broker** for transport, and a
 
 ```mermaid
 flowchart TB
-    subgraph Agent[Edge Agent]
+    subgraph Agent["Edge Agent"]
         Mon[Monitors]
         Eval[Local policy evaluator]
         Enf[Enforcer]
